@@ -1,0 +1,11 @@
+shiftty (ShifTTY) - Shapeshift Cryptocurrency Exchange Terminal
+
+*INCOMPLETE* - This repository is mainly to track changes and sync between
+different devices. The program is a personal project that will most likely
+stay in active development and/or never be completely finished. 
+
+ShifTTY is a command-line interface to the cryptocurrency exchange Shapeshift
+using its API. It was originally intended to be a simple interactive terminal
+that reduces mouse movements and clicks to text commands. After basic
+functionality is complete, further updates will act as modular components
+or expand compatability.
