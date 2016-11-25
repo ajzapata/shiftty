@@ -90,9 +90,9 @@ JSON::JSON(std::vector<JSON_item> items)
 
 }
 
-const std::vector<JSON_item>* JSON::items() const
+const std::vector<JSON_item> JSON::items() const
 {
-    return (const std::vector<JSON_item>*)&m_items;
+    return m_items; // (const std::vector<JSON_item>*)&
 }
 
 JSON_item JSON::getItem(std::string name) const
@@ -139,17 +139,22 @@ bool JSON::importRaw(std::string rawText) /// NSFL
 		if (c == ',') {
 			side_switch = false;
 			buffer.insert(buffer.end(), JSON_item(buffer_name, buffer_value));
+			buffer_name = "";
+			buffer_value = "";
 			continue;
 		}
 
 		/// Ignore these characters
 		if (c_ignore.find(c) != string::npos) continue;
 
-		if (!side_switch) /// Write to name buffer
-		{
-
-		}
+		if (!side_switch)	/// Write to name buffer
+			buffer_name += c;
+		else				/// Write to value buffer
+			buffer_value += c;
 	}
+
+	/// Save last item to buffer (since there isn't a comma to reset at)
+	buffer.insert(buffer.end(), JSON_item(buffer_name, buffer_value));
 
 	/// Save buffer
 	for (size_t i = 0; i < buffer.size(); i++)

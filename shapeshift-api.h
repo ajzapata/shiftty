@@ -62,7 +62,8 @@ struct api_marketInfo_obj
 	string coin_pair;				/// "pair"
 	double rate;
 	double limit_min;				/// "min"
-	double limit_max;				/// "limit"
+	double limit_qmax;				/// "limit"; applies only for "quick" tx's
+	double limit_max;				/// "maxLimit"
 	double minerfee;
 	string error = "";
 };

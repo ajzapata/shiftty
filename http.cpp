@@ -28,12 +28,6 @@ std::string http_get(std::string url)
 	/// CURL objects
 	CURL* http_req;
 	CURLcode curl_retcode;
-	char* url_cstr = (char*)malloc(sizeof(char) * url.length());
-
-	/// Need to convert (string)url to (char*)
-	for (size_t i = 0; i < url.length(); i++) {
-		url_cstr[i] = url[i];
-	}
 
 	#ifdef WIN32
 	curl_global_init(CURL_GLOBAL_ALL); // Initializes winsock stuff
@@ -54,7 +48,7 @@ std::string http_get(std::string url)
 	FILE* http_response = fopen(".http_response", "w");
 
 	/// Load URL to CURL object
-	curl_easy_setopt(http_req, CURLOPT_URL, url_cstr);
+	curl_easy_setopt(http_req, CURLOPT_URL, url.c_str());
 	curl_easy_setopt(http_req, CURLOPT_WRITEFUNCTION, NULL);
 	curl_easy_setopt(http_req, CURLOPT_WRITEDATA, http_response);
 
@@ -107,7 +101,6 @@ std::string http_get(std::string url)
 
 	/* Cleanup */
 	fclose(http_response);
-	free(url_cstr);
 	curl_easy_cleanup(http_req);
 	curl_global_cleanup();
 
@@ -120,18 +113,6 @@ std::string http_post(std::string url, std::string post_data)
 	/// CURL objects
 	CURL* http_req;
 	CURLcode curl_retcode;
-	char* url_cstr = (char*)malloc(sizeof(char) * url.length());
-	char* post_data_cstr = (char*)malloc(sizeof(char) * post_data.length());
-
-	/// Need to convert (string)url to (char*)
-	for (size_t i = 0; i < url.length(); i++) {
-		url_cstr[i] = url[i];
-	}
-
-	/// Need to convert (string)post_data to (char*)
-	for (size_t i = 0; i < post_data.length(); i++) {
-		post_data_cstr[i] = post_data[i];
-	}
 
 	#ifdef WIN32
 	curl_global_init(CURL_GLOBAL_ALL); // Initializes winsock stuff
@@ -152,10 +133,10 @@ std::string http_post(std::string url, std::string post_data)
 	FILE* http_response = fopen(".http_response", "w");
 
 	/// Load URL to CURL object
-	curl_easy_setopt(http_req, CURLOPT_URL, url_cstr);
+	curl_easy_setopt(http_req, CURLOPT_URL, url.c_str());
 	curl_easy_setopt(http_req, CURLOPT_WRITEFUNCTION, NULL);
 	curl_easy_setopt(http_req, CURLOPT_WRITEDATA, http_response);
-	curl_easy_setopt(http_req, CURLOPT_POSTFIELDS, post_data_cstr);
+	curl_easy_setopt(http_req, CURLOPT_POSTFIELDS, post_data.c_str());
 
 	/// Snippets from libcurl example "https_get"
 	#ifdef SKIP_PEER_VERIFICATION
@@ -204,7 +185,6 @@ std::string http_post(std::string url, std::string post_data)
 
 	/* Cleanup */
 	fclose(http_response);
-	free(url_cstr);
 	curl_easy_cleanup(http_req);
 	curl_global_cleanup();
 

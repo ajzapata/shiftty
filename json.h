@@ -43,7 +43,7 @@ public:
 	JSON(std::vector<JSON_item> items);
 	// JSON(string raw_text);
 
-	const std::vector<JSON_item>* items() const;
+	const std::vector<JSON_item> items() const;
 
 	JSON_item getItem(std::string name) const;
 

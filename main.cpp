@@ -15,6 +15,7 @@ using its API.
 #include <cstring>
 #include <fstream>
 #include <cassert>
+#include <vector>
 #include "http.h"
 #include "json.h"
 #include "shapeshift-api.h"
@@ -33,17 +34,22 @@ using namespace std;
 
 int main(int argc, const char* argv[])
 {
-	api_depositLimit_obj obj = api_depositLimit("btc_ltc");
+	vector<api_marketInfo_obj> obj = api_marketInfo("btc_ltc");
 
-	if (obj.error != "") {
+	if (obj[0].error != "") {
 		/// Error condition
-		cout << "ERROR: " << obj.error << endl;
+		cout << "ERROR: " << obj[0].error << endl;
 		return 1;
 	}
 	else {
-		cout << "coin_pair: " << obj.coin_pair << endl;
-		cout << "limit: " << obj.limit_max << endl;
-		cout << "min: " << obj.limit_min << endl;
+		cout << "VECTOR SIZE: " << obj.size() << endl;
+		cout << endl << "FIRST ITEM IN VECTOR:" << endl;
+		cout << "   coin_pair: " << obj[0].coin_pair << endl;
+		cout << "   rate: " << obj[0].rate << endl;
+		cout << "   minerFee: " << obj[0].minerfee << endl;
+		cout << "   limit: " << obj[0].limit_qmax << endl;
+		cout << "   minimum: " << obj[0].limit_min << endl;
+		cout << "   maxLimit: " << obj[0].limit_max << endl;
 	}
 
     return 0;
