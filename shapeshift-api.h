@@ -36,10 +36,6 @@ const string URL_API_CREATE_TRANSACTION = "https://shapeshift.io/sendamount";
 const string URL_API_CANCEL_TRANSACTION =
 	"https://shapeshift.io/cancelpending";
 
-/* Helper Functions */
-
-char* to_cstr(string s);
-
 /* Shapeshift API Objects - Encapsulates API response */
 
 struct api_rate_obj

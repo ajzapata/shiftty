@@ -1,5 +1,8 @@
 # With focus on Code::blocks and Visual Studio IDEs
 
+# Temporary files
+.http_response
+
 # Code::blocks IDE
 
 bin/

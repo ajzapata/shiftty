@@ -13,14 +13,6 @@
 
 using namespace std;
 
-char* to_cstr(string s) // s has member func s.c_str()
-{
-	char* cstr = new char[s.size() + 1];
-
-	strcpy(cstr, s.c_str());
-	return cstr;
-}
-
 api_rate_obj api_rate(string coin_pair)
 {
 	/// API call
