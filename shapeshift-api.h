@@ -69,7 +69,7 @@ struct api_recentTransactions_obj
 	string coin_in;
 	string coin_out;
 	double amount;
-	uint64_t timestamp_sec;
+	double timestamp_sec;
 	string error = "";
 };
 
@@ -169,11 +169,11 @@ api_rate_obj api_rate(string coin_pair);
 
 api_depositLimit_obj api_depositLimit(string coin_pair);
 
-vector<api_marketInfo_obj> api_marketInfo(string coin_pair = "");
-
-#if 0
+vector<api_marketInfo_obj> api_marketInfo(string coin_pair);
 
 vector<api_recentTransactions_obj> api_recentTransactions(uint8_t amount = 5);
+
+#if 0
 
 api_transactionStatus_obj api_transactionStatus(string address_in);
 

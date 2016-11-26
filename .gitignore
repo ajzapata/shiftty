@@ -2,6 +2,7 @@
 
 # Temporary files
 .http_response
+CHANGES.tmp
 
 # Code::blocks IDE
 

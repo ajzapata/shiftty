@@ -181,18 +181,69 @@ vector<api_marketInfo_obj> api_marketInfo(string coin_pair)
     return v_obj;
 }
 
-#if 0
-
 vector<api_recentTransactions_obj> api_recentTransactions(uint8_t amount)
 {
-	vector<api_recentTransactions_obj> tx_list;
-
-	/// Amount must be between 1 and 50 inclusive; otherwise return empty.
+	/// Amount must be between 1 and 50 inclusive.
 	if (amount < 1 || amount > 50)
-		return tx_list;
+	{
+		/// Return custom error message for API call to fail safely
+		api_recentTransactions_obj obj;
+		obj.error = "[SELF] Transaction amount out of range.";
+		vector<api_recentTransactions_obj> v_obj;
+		v_obj.push_back(obj);
+		return v_obj;
+	}
 
+	/// API call
+	string json_recentTransactions_raw =
+		http_get(URL_API_RECENT_TRANSACTIONS + to_string(amount));
 
+	/// Interpret and extract JSON data
+	JSON json_recentTransactions;
+	json_recentTransactions.importRaw(json_recentTransactions_raw);
+
+	vector<api_recentTransactions_obj> v_obj;
+
+	/// Check for error field first
+	if (json_recentTransactions.getItem("error") != JSON_ITEM_EMPTY)
+	{
+		api_recentTransactions_obj obj;
+		obj.error = json_recentTransactions.getItem("error").value();
+		v_obj.push_back(obj);
+		return v_obj;
+	}
+
+	JSON_item i_curIn, i_curOut, i_timestamp, i_amount;
+	string s_curIn, s_curOut;
+	double d_timestamp, d_amount;
+	api_recentTransactions_obj obj;
+	for (size_t i = 0; i < json_recentTransactions.items().size(); i++)
+	{
+		/// Retrieve item-pairs
+		i_curIn = json_recentTransactions.items()[i++];
+		i_curOut = json_recentTransactions.items()[i++];
+		i_timestamp = json_recentTransactions.items()[i++];
+		i_amount = json_recentTransactions.items()[i];
+
+		/// Interpret item-pairs where necessary
+		s_curIn = i_curIn.value();
+		s_curOut = i_curOut.value();
+		d_timestamp = strtod(i_timestamp.value().c_str(), NULL);
+		d_amount = strtod(i_amount.value().c_str(), NULL);
+
+		/// Fill API object fields
+		obj.coin_in = s_curIn;
+		obj.coin_out = s_curOut;
+		obj.timestamp_sec = d_timestamp;
+		obj.amount = d_amount;
+
+		v_obj.push_back(obj);
+	}
+
+	return v_obj;
 }
+
+#if 0
 
 api_transactionStatus_obj api_transactionStatus(string address_in)
 {
