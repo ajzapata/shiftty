@@ -34,21 +34,10 @@ using namespace std;
 
 int main(int argc, const char* argv[])
 {
-	vector<api_marketInfo_obj> obj = api_marketInfo("");
+	api_transactionStatus_obj obj =
+		api_transactionStatus("NULL");
 
-	if (obj[0].error != "") {
-		/// Error condition
-		cout << "ERROR: " << obj[0].error << endl;
-		return 1;
-	}
-	else {
-		cout << "VECTOR SIZE: " << obj.size() << endl;
-		//cout << endl << "FIRST ITEM IN VECTOR:" << endl;
-		//cout << "   curIn: " << obj[0].coin_in << endl;
-		//cout << "   curOut: " << obj[0].coin_out << endl;
-		//cout << "   timestamp: " << obj[0].timestamp_sec << endl;
-		//cout << "   amount: " << obj[0].amount << endl;
-	}
+	int breakpointHere = 0;
 
-    return 0;
+    return breakpointHere;
 }

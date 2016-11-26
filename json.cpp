@@ -123,7 +123,7 @@ bool JSON::importRaw(std::string rawText) /// NSFL
 	vector<JSON_item> buffer;
 
 	bool side_switch = false;
-	string c_ignore = "[{\"\'}] ";
+	string c_ignore = "[{\"\'}]\377";
 
 	for (size_t i = 0; i < rawText.length(); i++)
 	{
