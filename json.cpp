@@ -80,15 +80,11 @@ bool JSON_item::setValue(std::string value)
 
 JSON::JSON()
 : m_size(0)
-{
-
-}
+{}
 
 JSON::JSON(std::vector<JSON_item> items)
 : m_size(items.size()), m_items(items)
-{
-
-}
+{}
 
 const std::vector<JSON_item> JSON::items() const
 {
@@ -104,7 +100,6 @@ JSON_item JSON::getItem(std::string name) const
 	}
 
 	/// Item not found
-	//cerr << "JSON_RETURN_EMPTY" << endl;
 	return JSON_ITEM_EMPTY;
 }
 

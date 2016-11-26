@@ -17,24 +17,21 @@ using std::vector;
 /* Constants */
 
 /// URLS
-const string URL_API_RATE = "https://shapeshift.io/rate/";
-const string URL_API_DEPOSIT_LIMIT = "https://shapeshift.io/limit/";
-const string URL_API_MARKET_INFO = "https://shapeshift.io/marketinfo/";
-const string URL_API_RECENT_TRANSACTIONS = "https://shapeshift.io/recenttx/";
-const string URL_API_TRANSACTION_STATUS = "https://shapeshift.io/txStat/";
-const string URL_API_TIME_REMAINING = "https://shapeshift.io/timeremaining/";
-const string URL_API_LIST_COINS = "https://shapeshift.io/getcoins";
-const string URL_API_LIST_TRANSACTIONS_PRIVATE =
-	"https://shapeshift.io/txbyapikey/";
-const string URL_API_LIST_TRANSACTIONS_PRIVATE_ADDR =
-	"https://shapeshift.io/txbyaddress/";
-const string URL_API_VALIDATE_ADDRESS =
-	"https://shapeshift.io/validateAddress/";
-const string URL_API_CREATE_TRANSACTION_QUICK = "https://shapeshift.io/shift";
-const string URL_API_REQUEST_EMAIL_RECEIPT = "https://shapeshift.io/mail";
-const string URL_API_CREATE_TRANSACTION = "https://shapeshift.io/sendamount";
-const string URL_API_CANCEL_TRANSACTION =
-	"https://shapeshift.io/cancelpending";
+const string
+URL_API_RATE = "https://shapeshift.io/rate/",
+URL_API_DEPOSIT_LIMIT = "https://shapeshift.io/limit/",
+URL_API_MARKET_INFO = "https://shapeshift.io/marketinfo/",
+URL_API_RECENT_TRANSACTIONS = "https://shapeshift.io/recenttx/",
+URL_API_TRANSACTION_STATUS = "https://shapeshift.io/txStat/",
+URL_API_TIME_REMAINING = "https://shapeshift.io/timeremaining/",
+URL_API_LIST_COINS = "https://shapeshift.io/getcoins",
+URL_API_LIST_TRANSACTIONS_PRIVATE = "https://shapeshift.io/txbyapikey/",
+URL_API_LIST_TRANSACTIONS_PRIVATE_ADDR = "https://shapeshift.io/txbyaddress/",
+URL_API_VALIDATE_ADDRESS = "https://shapeshift.io/validateAddress/",
+URL_API_CREATE_TRANSACTION_QUICK = "https://shapeshift.io/shift",
+URL_API_REQUEST_EMAIL_RECEIPT = "https://shapeshift.io/mail",
+URL_API_CREATE_TRANSACTION = "https://shapeshift.io/sendamount",
+URL_API_CANCEL_TRANSACTION = "https://shapeshift.io/cancelpending";
 
 /* Shapeshift API Objects - Encapsulates API response */
 
