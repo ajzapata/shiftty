@@ -104,6 +104,8 @@ vector<api_marketInfo_obj> api_marketInfo(string coin_pair)
 	/// checking for duplicate fields (i.e. having a large amount of pairs).
 
 	JSON_item i_pair, i_rate, i_minerFee, i_min, i_max, i_qmax, i_error;
+	string s_pair;
+	double d_rate, d_minerFee, d_min, d_max, d_qmax;
 	api_marketInfo_obj obj;
 	if (json_marketInfo.getItem("error") != JSON_ITEM_EMPTY) /// Invalid pair
 	{
@@ -130,12 +132,12 @@ vector<api_marketInfo_obj> api_marketInfo(string coin_pair)
 			i_minerFee = json_marketInfo.items()[i]; // incr. on loop-continue
 
 			/// Interpret item-pairs where necessary
-			string s_pair = i_pair.value();
-			double d_rate = strtod(i_rate.value().c_str(), NULL);
-			double d_minerFee = strtod(i_minerFee.value().c_str(), NULL);
-			double d_min = strtod(i_min.value().c_str(), NULL);
-			double d_max = strtod(i_max.value().c_str(), NULL);
-			double d_qmax = strtod(i_qmax.value().c_str(), NULL);
+			s_pair = i_pair.value();
+			d_rate = strtod(i_rate.value().c_str(), NULL);
+			d_minerFee = strtod(i_minerFee.value().c_str(), NULL);
+			d_min = strtod(i_min.value().c_str(), NULL);
+			d_max = strtod(i_max.value().c_str(), NULL);
+			d_qmax = strtod(i_qmax.value().c_str(), NULL);
 
 			/// Fill API object fields
 			obj.coin_pair = s_pair;
@@ -160,12 +162,12 @@ vector<api_marketInfo_obj> api_marketInfo(string coin_pair)
 		i_max = json_marketInfo.items()[5];
 
 		/// Interpret item-pairs where necessary
-		string s_pair = i_pair.value();
-		double d_rate = strtod(i_rate.value().c_str(), NULL);
-		double d_minerFee = strtod(i_minerFee.value().c_str(), NULL);
-		double d_min = strtod(i_min.value().c_str(), NULL);
-		double d_max = strtod(i_max.value().c_str(), NULL);
-		double d_qmax = strtod(i_qmax.value().c_str(), NULL);
+		s_pair = i_pair.value();
+		d_rate = strtod(i_rate.value().c_str(), NULL);
+		d_minerFee = strtod(i_minerFee.value().c_str(), NULL);
+		d_min = strtod(i_min.value().c_str(), NULL);
+		d_max = strtod(i_max.value().c_str(), NULL);
+		d_qmax = strtod(i_qmax.value().c_str(), NULL);
 
 		/// Fill API object fields
 		obj.coin_pair = s_pair;

@@ -34,7 +34,7 @@ using namespace std;
 
 int main(int argc, const char* argv[])
 {
-	vector<api_recentTransactions_obj> obj = api_recentTransactions(-1);
+	vector<api_marketInfo_obj> obj = api_marketInfo("");
 
 	if (obj[0].error != "") {
 		/// Error condition
@@ -43,11 +43,11 @@ int main(int argc, const char* argv[])
 	}
 	else {
 		cout << "VECTOR SIZE: " << obj.size() << endl;
-		cout << endl << "FIRST ITEM IN VECTOR:" << endl;
-		cout << "   curIn: " << obj[0].coin_in << endl;
-		cout << "   curOut: " << obj[0].coin_out << endl;
-		cout << "   timestamp: " << obj[0].timestamp_sec << endl;
-		cout << "   amount: " << obj[0].amount << endl;
+		//cout << endl << "FIRST ITEM IN VECTOR:" << endl;
+		//cout << "   curIn: " << obj[0].coin_in << endl;
+		//cout << "   curOut: " << obj[0].coin_out << endl;
+		//cout << "   timestamp: " << obj[0].timestamp_sec << endl;
+		//cout << "   amount: " << obj[0].amount << endl;
 	}
 
     return 0;
