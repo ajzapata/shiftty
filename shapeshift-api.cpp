@@ -352,8 +352,6 @@ api_transactionStatus_obj api_transactionStatus(string address_in)
 	return obj;
 }
 
-#if 0
-
 /// Time Remaining on Fixed Amount Transaction (api_timeRemaining):
 /// When a transaction is created with a fixed amount requested there is a 10
 /// minute window for the deposit. After the 10 minute window if the deposit
@@ -365,8 +363,34 @@ api_transactionStatus_obj api_transactionStatus(string address_in)
 /// sending it in as a param, to get a successful response.
 api_timeRemaining_obj api_timeRemaining(string deposit_address)
 {
+	/// API call
+	string json_timeRemaining_raw =
+		http_get(URL_API_TIME_REMAINING + deposit_address);
 
+	/// Interpret and extract JSON data
+	JSON json_timeRemaining;
+	json_timeRemaining.importRaw(json_timeRemaining_raw);
+
+	api_timeRemaining_obj obj;
+
+	JSON_item i_status = json_timeRemaining.getItem("status");
+	JSON_item i_seconds = json_timeRemaining.getItem("seconds_remaining");
+	JSON_item i_error = json_timeRemaining.getItem("error");
+
+	if (i_error != JSON_ITEM_EMPTY)
+	{
+		obj.error = i_error.value();
+	}
+	else
+	{
+		obj.status = i_status.value();
+		obj.seconds_remaining = atoi(i_seconds.value().c_str());
+	}
+
+	return obj;
 }
+
+#if 0
 
 /// Get List of Supported Coins with Icon Links (api_listCoins):
 /// Allows anyone to get a list of all the currencies that Shapeshift

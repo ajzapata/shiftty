@@ -175,9 +175,9 @@ vector<api_recentTransactions_obj> api_recentTransactions(uint8_t amount = 5);
 
 api_transactionStatus_obj api_transactionStatus(string address_in);
 
-#if 0
-
 api_timeRemaining_obj api_timeRemaining(string deposit_address);
+
+#if 0
 
 vector<api_listCoins_obj> api_listCoins();
 

@@ -34,8 +34,8 @@ using namespace std;
 
 int main(int argc, const char* argv[])
 {
-	api_transactionStatus_obj obj =
-		api_transactionStatus("NULL");
+	api_timeRemaining_obj obj =
+		api_timeRemaining("NULL");
 
 	int breakpointHere = 0;
 
