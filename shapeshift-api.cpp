@@ -116,14 +116,13 @@ vector<api_marketInfo_obj> api_marketInfo(string coin_pair)
 		obj.error = i_error.value();
 		v_obj.push_back(obj);
 	}
-	else if (json_marketInfo.items().size() > 6) /// No argument given
+	else if (json_marketInfo.items().size() > 6) /// No argument given (SLOW!)
 	{
 		for (size_t i = 0; i < json_marketInfo.items().size(); i++)
 		{
 			/// Iterate through the item-pairs and increment iterator as we go.
 			/// This is safe as long as there are no uneven pairs in the API
 			/// response.
-
 			i_rate = json_marketInfo.items()[i++];
 			i_qmax = json_marketInfo.items()[i++];
 			i_pair = json_marketInfo.items()[i++];
@@ -153,7 +152,6 @@ vector<api_marketInfo_obj> api_marketInfo(string coin_pair)
 	else /// Valid pair
 	{
 		/// Retrieve item-pairs
-
 		i_pair = json_marketInfo.items()[0];
 		i_rate = json_marketInfo.items()[1];
 		i_minerFee = json_marketInfo.items()[2];
