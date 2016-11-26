@@ -190,8 +190,8 @@ api_createTransaction_quick_obj
 api_createTransaction_quick(string address_out, string coin_pair,
 	string return_address = "", string api_public_key = "");
 
-api_recentTransactions_obj
-api_recentTransactions(string email_address, string tx_id);
+api_requestEmailReceipt_obj
+api_requestEmailReceipt(string email_address, string tx_id);
 
 api_createTransaction_obj
 api_createTransaction(string address_out, double amount, string coin_pair,

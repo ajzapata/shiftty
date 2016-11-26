@@ -13,6 +13,17 @@
 
 using namespace std;
 
+/// API call descriptions are from Shapeshift's API documentation at
+///    https://info.shapeshift.io/api
+/// Descriptions retrieved at Friday November 25, 2016 22:37
+
+/// Rate (api_rate):
+/// Gets the current rate offered by Shapeshift. This is an estimate because
+/// the rate can occasionally change rapidly depending on the markets. The
+/// rate is also a 'use-able' rate not a direct market rate. Meaning
+/// multiplying your input coin amount times the rate should give you a close
+/// approximation of what will be sent out. This rate does not include the
+/// transaction (miner) fee taken off every transaction.
 api_rate_obj api_rate(string coin_pair)
 {
 	/// API call
@@ -42,6 +53,12 @@ api_rate_obj api_rate(string coin_pair)
 	return obj;
 }
 
+/// Deposit Limit (api_depositLimit):
+/// Gets the current deposit limit set by Shapeshift. Amounts deposited over
+/// this limit will be sent to the return address if one was entered,
+/// otherwise the user will need to contact ShapeShift support to retrieve
+/// their coins. This is an estimate because a sudden market swing could move
+/// the limit.
 api_depositLimit_obj api_depositLimit(string coin_pair)
 {
 	/// API call
@@ -73,6 +90,8 @@ api_depositLimit_obj api_depositLimit(string coin_pair)
 	return obj;
 }
 
+/// Market Info (api_marketInfo):
+/// This gets the market info (pair, rate, limit, minimum limit, miner fee)
 vector<api_marketInfo_obj> api_marketInfo(string coin_pair)
 {
 	/// API call
@@ -181,6 +200,8 @@ vector<api_marketInfo_obj> api_marketInfo(string coin_pair)
     return v_obj;
 }
 
+/// Recent Transaction List (api_recentTransactions):
+/// Get a list of the most recent transactions.
 vector<api_recentTransactions_obj> api_recentTransactions(uint8_t amount)
 {
 	/// Amount must be between 1 and 50 inclusive.
@@ -245,32 +266,71 @@ vector<api_recentTransactions_obj> api_recentTransactions(uint8_t amount)
 
 #if 0
 
+/// Status of deposit to address (api_transactionStatus):
+/// This returns the status of the most recent deposit transaction to the
+/// address.
 api_transactionStatus_obj api_transactionStatus(string address_in)
 {
 
 }
 
+/// Time Remaining on Fixed Amount Transaction (api_timeRemaining):
+/// When a transaction is created with a fixed amount requested there is a 10
+/// minute window for the deposit. After the 10 minute window if the deposit
+/// has not been received the transaction expires and a new one must be
+/// created. This api call returns how many seconds are left before the
+/// transaction expires. Please note that if the address is a ripple address,
+/// it will include the "?dt=destTagNUM" appended on the end, and you will
+/// need to use the URIEncodeComponent() function on the address before
+/// sending it in as a param, to get a successful response.
 api_timeRemaining_obj api_timeRemaining(string deposit_address)
 {
 
 }
 
+/// Get List of Supported Coins with Icon Links (api_listCoins):
+/// Allows anyone to get a list of all the currencies that Shapeshift
+/// currently supports at any given time. The list will include the name,
+/// symbol, availability status, and an icon link for each.
 vector<api_listCoins_obj> api_listCoins()
 {
 
 }
 
+/// Get List of Transactions with a PRIVATE API KEY
+/// (api_listTransactions_private):
+/// Allows vendors to get a list of all transactions that have ever been done
+/// using a specific API key. Transactions are created with an affilliate
+/// PUBLIC KEY, but they are looked up using the linked PRIVATE KEY, to
+/// protect the privacy of our affiliates' account details.
 vector<api_listTransactions_private_obj>
 api_listTransactions_private(string api_key, string address_in)
 {
 
 }
 
+/// Get List of Transactions with a Specific Output Address (MISSING!)
+/// Allows vendors to get a list of all transactions that have ever been sent
+/// to one of their addresses. The affilliate's PRIVATE KEY must be provided,
+/// and will only return transactions that were sent to output address AND
+/// were created using / linked to the affiliate's PUBLIC KEY. Please note
+/// that if the address is a ripple address and it includes the
+/// "?dt=destTagNUM" appended on the end, you will need to use the
+/// URIEncodeComponent() function on the address before sending it in as a
+/// param, to get a successful response.
+
+/// Validate an address, given a currency symbol and address.
+/// (api_validateAddress):
+/// Allows user to verify that their receiving address is a valid address
+/// according to a given wallet daemon. If isvalid returns true, this address
+/// is valid according to the coin daemon indicated by the currency symbol.
 api_validateAddress_obj api_validateAddress(string address)
 {
 
 }
 
+/// Normal Transaction (api_createTransaction_quick): *(not sure if quick?)
+/// This is the primary data input into ShapeShift.
 api_createTransaction_quick_obj
 api_createTransaction_quick(string address_out, string coin_pair,
 	string return_address, string api_public_key)
@@ -278,12 +338,23 @@ api_createTransaction_quick(string address_out, string coin_pair,
 
 }
 
-api_recentTransactions_obj
-api_recentTransactions(string email_address, string tx_id)
+/// Request Email Receipt (api_requestEmailReceipt):
+/// This call requests a receipt for a transaction. The email address will be
+/// added to the conduit associated with that transaction as well. (Soon it
+/// will also send receipts to subsequent transactions on that conduit)
+api_requestEmailReceipt_obj
+api_requestEmailReceipt(string email_address, string tx_id)
 {
 
 }
 
+/// Fixed Amount Transaction / Quote Send Exact Price (api_createTransaction):
+/// This call allows you to request a fixed amount to be sent to the withdrawal
+/// address. You provide a withdrawal address and the amount you want sent to
+/// it. We return the amount to deposit and the address to deposit to. This
+/// allows you to use shapeshift as a payment mechanism. This call also allows
+/// you to request a quoted price on the amount of a transaction without a
+/// withdrawal address.
 api_createTransaction_obj
 api_createTransaction(string address_out, double amount, string coin_pair,
 	bool getQuoteOnly, string return_address, string api_public_key)
@@ -291,6 +362,10 @@ api_createTransaction(string address_out, double amount, string coin_pair,
 
 }
 
+/// Cancel Pending Transaction (api_cancelTransaction):
+/// This call allows you to request for canceling a pending transaction by the
+/// deposit address. If there is fund sent to the deposit address, this
+/// pending transaction cannot be canceled.
 api_cancelTransaction_obj api_cancelTransaction(string address_in)
 {
 
