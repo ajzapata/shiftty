@@ -12,7 +12,7 @@ DCFLAGS = -g -O0
 RDIR = bin/Release
 RCFLAGS = -O2
 
-DISTFILES = Makefile $(CFILES)
+DISTFILES = Makefile LICENSE README $(CFILES)
 
 Debug: main.cpp
 	$(CC) $(DCFLAGS) $(CFLAGS) -o $(DDIR)/$(PRGM) $(CFILES)
