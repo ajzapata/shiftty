@@ -168,5 +168,6 @@ bool JSON::importRaw(std::string rawText) /// NSFL
 	for (size_t i = 0; i < buffer.size(); i++)
 		m_items.insert(m_items.end(), buffer[i]);
 
+	m_size = m_items.size();
 	return true;
 }
