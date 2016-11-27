@@ -41,13 +41,13 @@ class JSON
 public:
 	JSON();
 	JSON(std::vector<JSON_item> items);
-	// JSON(string raw_text);
+	JSON(std::string raw_text);
 
 	const std::vector<JSON_item> items() const;
 
 	JSON_item getItem(std::string name) const;
 
-	// std::string exportRaw() const;
+	std::string exportRaw() const;
 	// bool exportFile(std::string filename, FILE* filePtr = nullptr);
 	bool importRaw(std::string rawText);
 

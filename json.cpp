@@ -86,6 +86,12 @@ JSON::JSON(std::vector<JSON_item> items)
 : m_size(items.size()), m_items(items)
 {}
 
+JSON::JSON(std::string raw_text)
+{
+	importRaw(raw_text);
+	m_size = m_items.size();
+}
+
 const std::vector<JSON_item> JSON::items() const
 {
     return m_items; // (const std::vector<JSON_item>*)&
@@ -101,6 +107,11 @@ JSON_item JSON::getItem(std::string name) const
 
 	/// Item not found
 	return JSON_ITEM_EMPTY;
+}
+
+std::string JSON::exportRaw() const
+{
+	return m_raw;
 }
 
 bool JSON::importRaw(std::string rawText) /// NSFL

@@ -161,7 +161,6 @@ struct api_cancelTransaction_obj
 
 /* Shapeshift API Function Declarations */
 
-/// api_rate: Returns
 api_rate_obj api_rate(string coin_pair);
 
 api_depositLimit_obj api_depositLimit(string coin_pair);
