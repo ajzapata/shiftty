@@ -109,6 +109,8 @@ bool JSON::importRaw(std::string rawText) /// NSFL
 	/// by a colon character ':'; pairs delimited by comma ','; string
 	/// values enclosed by quotation-marks (ASCII, i.e. non-fancy).
 
+	m_raw = rawText;
+
 	/// Assume JSON is correct...
 	/// Does not distinguish between groups/dictionaries/etc. (i.e. duplicates)
 
@@ -157,30 +159,3 @@ bool JSON::importRaw(std::string rawText) /// NSFL
 
 	return true;
 }
-
-#if 0
-
-	/// Mod 4: each increment is first-open/first-closed/sec-open/sec-closed/..
-	int qmark_state = 0;
-
-        c = rawText[i];
-
-        if (c == '\"') qmark_state++;
-
-        if (qmark_state == 1) /// first quote open
-        {
-			if (c != '\"') buffer_name += c;
-        }
-        else if (qmark_state == 3) /// second quote open (after first-q closed)
-        {
-			if (c != '\"') buffer_value += c;
-        }
-        else if (qmark_state == 4) /// second quote closed -> reset
-        {
-			buffer.insert(buffer.end(), JSON_item(buffer_name, buffer_value));
-			buffer_name = "";
-			buffer_value = "";
-			qmark_state = 0;
-        }
-
-#endif // 0

@@ -56,7 +56,7 @@ public:
 private:
 	int m_size;
 	std::vector<JSON_item> m_items;
-	// std::string m_raw;
+	std::string m_raw;
 };
 
 #endif // JSON_INCLUDED
