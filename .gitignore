@@ -3,6 +3,7 @@
 # Temporary files
 .http_response
 CHANGES.tmp
+*.bak
 
 # Code::blocks IDE
 
