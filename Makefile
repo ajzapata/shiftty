@@ -2,7 +2,7 @@ CC = g++
 CFLAGS = -std=c++14 -Wall -Wextra -Wno-unused-parameter -lcurl
 PRGM = shiftty
 CFILES = main.cpp http.h http.cpp json.h json.cpp shapeshift-api.h \
-shapeshift-api.cpp
+shapeshift-api.cpp logger.h logger.cpp
 
 # Debug
 DDIR = bin/Debug

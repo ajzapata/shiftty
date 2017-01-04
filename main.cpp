@@ -18,6 +18,7 @@ using its API.
 #include <vector>
 #include "http.h"
 #include "json.h"
+#include "logger.h"
 #include "shapeshift-api.h"
 
 /* OS-specific Libraries */
@@ -34,10 +35,16 @@ using namespace std;
 
 int main(int argc, const char* argv[])
 {
-	api_timeRemaining_obj obj =
-		api_timeRemaining("NULL");
+	api_rate_obj obj = api_rate("btc_xmr");
+
+	if (obj.error == "") {
+		cout << "coin_pair: " << obj.coin_pair << endl;
+		cout << "rate: " << obj.rate << endl;
+	} else
+		cout << "error: " << obj.error << endl;
 
 	int breakpointHere = 0;
+	log("Hello world!");
 
     return breakpointHere;
 }
