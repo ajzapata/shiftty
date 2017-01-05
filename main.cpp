@@ -20,6 +20,7 @@ using its API.
 #include "json.h"
 #include "logger.h"
 #include "shapeshift-api.h"
+#include "shapeshift-api-debug.h"
 
 /* OS-specific Libraries */
 
@@ -35,13 +36,7 @@ using namespace std;
 
 int main(int argc, const char* argv[])
 {
-	api_rate_obj obj = api_rate("btc_xmr");
-
-	if (obj.error == "") {
-		cout << "coin_pair: " << obj.coin_pair << endl;
-		cout << "rate: " << obj.rate << endl;
-	} else
-		cout << "error: " << obj.error << endl;
+	test_rate("btc_xmr", true);
 
 	int breakpointHere = 0;
 	log("Hello world!");
