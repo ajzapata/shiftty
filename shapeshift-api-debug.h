@@ -3,7 +3,7 @@
 
 #include "shapeshift-api.h"
 #include <string>
-#include <cstdint>
+#include <cinttypes>
 
 using std::string;
 

@@ -9,7 +9,7 @@ using its API.
 /* C++ Standard Library */
 
 #include <cstdlib>
-#include <cstdint>
+#include <cinttypes>
 #include <iostream>
 #include <string>
 #include <cstring>

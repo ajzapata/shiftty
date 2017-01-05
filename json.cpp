@@ -3,7 +3,7 @@
 /* C++ Standard Library */
 
 #include <cstdlib>
-#include <cstdint>
+#include <cinttypes>
 #include <cstdio>
 #include <iostream>
 #include <string>
