@@ -6,18 +6,12 @@ using its API.
 
 ******************************************************************************/
 
-/* C++ Standard Library */
-
 #include <cstdlib>
 #include <cinttypes>
 #include <iostream>
 #include <string>
-#include <cstring>
-#include <fstream>
 #include <cassert>
 #include <vector>
-#include "http.h"
-#include "json.h"
 #include "logger.h"
 #include "shapeshift-api.h"
 #include "shapeshift-api-debug.h"
