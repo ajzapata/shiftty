@@ -21,6 +21,10 @@
 
 #include <curl/curl.h>
 
+/* Project Libraries */
+
+#include "logger.h"
+
 using namespace std;
 
 std::string http_get(std::string url)
@@ -28,6 +32,7 @@ std::string http_get(std::string url)
 	/// CURL objects
 	CURL* http_req;
 	CURLcode curl_retcode;
+	//double http_code;
 
 	#ifdef WIN32
 	curl_global_init(CURL_GLOBAL_ALL); // Initializes winsock stuff
@@ -80,10 +85,18 @@ std::string http_get(std::string url)
 	/// Execute request
 	curl_retcode = curl_easy_perform(http_req);
 
+	/// Get HTTP response code
+	//curl_easy_getinfo(http_req, CURLINFO_RESPONSE_CODE, &http_code);
+
+	/// Only log HTTP code if not zero
+	//if (http_code != 0)
+	//	log("HTTP GET " + url + "; RETURN CODE " + to_string((int)http_code));
+	/// (^ non-functional; http_code never becomes defined)
+
 	/// Check for errors with the request
 	if (curl_retcode != CURLE_OK) {
-		cerr << "http.cpp::http_get HTTP Request failed." << endl
-			<< "> " << curl_easy_strerror(curl_retcode) << endl;
+		log("http.cpp::http_get HTTP Request failed. " +
+			string(curl_easy_strerror(curl_retcode)), MessageType::error);
 		return "";
 	}
 
@@ -113,6 +126,7 @@ std::string http_post(std::string url, std::string post_data)
 	/// CURL objects
 	CURL* http_req;
 	CURLcode curl_retcode;
+	//double http_code;
 
 	#ifdef WIN32
 	curl_global_init(CURL_GLOBAL_ALL); // Initializes winsock stuff
@@ -166,10 +180,17 @@ std::string http_post(std::string url, std::string post_data)
 	/// Execute request
 	curl_retcode = curl_easy_perform(http_req);
 
+	/// Get HTTP response code
+	//curl_easy_getinfo(http_req, CURLINFO_RESPONSE_CODE, &http_code);
+
+	/// Only log HTTP code if not zero
+	//if (http_code != 0)
+	//	log("HTTP GET " + url + "; RETURN CODE " + to_string((int)http_code));
+
 	/// Check for errors with the request
 	if (curl_retcode != CURLE_OK) {
-		cerr << "http.cpp::http_get HTTP Request failed." << endl
-			<< "> " << curl_easy_strerror(curl_retcode) << endl;
+		log("http.cpp::http_get HTTP Request failed. " +
+			string(curl_easy_strerror(curl_retcode)), MessageType::error);
 		return "";
 	}
 
