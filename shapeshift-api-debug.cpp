@@ -19,7 +19,7 @@ int test_rate(string coin_pair, bool verbose)
 	{
 		cerr << "##### TESTING api_rate #####" << endl;
 		cerr << "Function arguments:" << endl;
-		cerr << "coin_pair: " << coin_pair << endl;
+		cerr << "coin_pair = " << coin_pair << endl;
 		cerr << "Function output:" << endl;
 		cerr << "retval = " << s_retval << endl;
 		if (obj.error != "") /// API error
@@ -52,7 +52,7 @@ int test_depositLimit(string coin_pair, bool verbose)
 	{
 		cerr << "##### TESTING api_depositLimit #####" << endl;
 		cerr << "Function arguments:" << endl;
-		cerr << "coin_pair: " << coin_pair << endl;
+		cerr << "coin_pair = " << coin_pair << endl;
 		cerr << "Function output:" << endl;
 		cerr << "retval = " << s_retval << endl;
 		if (obj.error != "") /// API error
