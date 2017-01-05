@@ -1,6 +1,7 @@
 #include "shapeshift-api-debug.h"
 #include <iostream>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -24,6 +25,9 @@ int test_rate(string coin_pair, bool verbose)
 		cerr << "retval = " << s_retval << endl;
 		if (obj.error != "") /// API error
 		{
+			/// Technically string objects like obj.coin_pair aren't undefined
+			/// due to having a constructor, but it's preferable to not try
+			/// accessing them as they're useless on their own anyways...
 			cerr << "obj.coin_pair = (UNDEFINED)" << endl;
 			cerr << "obj.rate = (UNDEFINED)" << endl;
 		}
@@ -69,6 +73,56 @@ int test_depositLimit(string coin_pair, bool verbose)
 		}
 		cerr << "obj.error = " << obj.error << endl;
 		cerr << "##### END TESTING api_depositLimit #####" << endl;
+	}
+
+	return i_retval;
+}
+
+int test_marketInfo(string coin_pair, bool verbose)
+{
+	/// Note that the API function returns a vector of objects
+    vector<api_marketInfo_obj> obj = api_marketInfo(coin_pair);
+
+	/// Check for API errors; the error is reported in the first object
+	int i_retval = obj[0].error != "" ? TEST_API_ERR : TEST_OK;
+	string s_retval = obj[0].error != "" ? "TEST_API_ERR" : "TEST_OK";
+
+	/// Print API call output
+	if (verbose)
+	{
+		cerr << "##### TESTING api_marketInfo #####" << endl;
+		cerr << "Function arguments:" << endl;
+		cerr << "coin_pair = " << coin_pair << endl;
+		cerr << "Function output:" << endl;
+		cerr << "retval = " << s_retval << endl;
+		if (obj[0].error != "") /// API error
+		{
+			cerr << "obj[0].coin_pair = (UNDEFINED)" << endl;
+			cerr << "obj[0].rate = (UNDEFINED)" << endl;
+			cerr << "obj[0].limit_min = (UNDEFINED)" << endl;
+			cerr << "obj[0].limit_qmax = (UNDEFINED)" << endl;
+			cerr << "obj[0].limit_max = (UNDEFINED)" << endl;
+			cerr << "obj[0].minerfee = (UNDEFINED)" << endl;
+			cerr << "obj[0].error = " << obj[0].error << endl;
+		}
+		else
+		{
+			string objstr;
+
+			/// We iterate through all the coin pairs
+			for (size_t i = 0; i < obj.size(); i++)
+			{
+				objstr = "obj[" + to_string(i) + "]";
+				cerr << objstr + ".coin_pair = " << obj[i].coin_pair << endl;
+				cerr << objstr + ".rate = " << obj[i].rate << endl;
+				cerr << objstr + ".limit_min = " << obj[i].limit_min << endl;
+				cerr << objstr + ".limit_qmax = " << obj[i].limit_qmax << endl;
+				cerr << objstr + ".limit_max = " << obj[i].limit_max << endl;
+				cerr << objstr + ".minerfee = " << obj[i].minerfee << endl;
+				cerr << objstr + ".error = " << obj[i].error << endl;
+			}
+		}
+		cerr << "##### END TESTING api_marketInfo #####" << endl;
 	}
 
 	return i_retval;
