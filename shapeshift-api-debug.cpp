@@ -127,3 +127,31 @@ int test_marketInfo(string coin_pair, bool verbose)
 
 	return i_retval;
 }
+
+/// Test-case batches
+
+int test_all(bool verbose)
+{
+	cerr << "##### BEGIN BATCH TEST ALL #####" << endl;
+
+	int retval_rate = test_rate(DEFAULT_COIN_PAIR, verbose);
+	int retval_depositLimit = test_depositLimit(DEFAULT_COIN_PAIR, verbose);
+	int retval_marketInfo = test_marketInfo(DEFAULT_COIN_PAIR, verbose);
+
+	bool pass = !(retval_rate || retval_depositLimit || retval_marketInfo);
+	string s_pass = pass ? "PASS" : "FAIL";
+
+	cerr << "RESULT: " << s_pass << endl;
+	cerr << "(0: TEST_OK | 1: TEST_API_ERR | 2: TEST_API_UNEXPECTED_VALUE)"
+		<< endl << endl;
+
+	/// List tests; mark those that failed (list is incomplete ^)
+	cerr << "[" << retval_rate << "] test_rate" << endl;
+	cerr << "[" << retval_depositLimit << "] test_depositLimit" << endl;
+	cerr << "[" << retval_marketInfo << "] test_marketInfo" << endl;
+
+	cerr << "##### END BATCH TEST ALL #####" << endl;
+
+	/// '0' = pass (as a return value)
+	return !pass;
+}

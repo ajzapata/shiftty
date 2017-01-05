@@ -14,6 +14,12 @@ const int TEST_OK						= 0;
 const int TEST_API_ERR					= 1;
 const int TEST_API_UNEXPECTED_VALUE		= 2;
 
+/// Test-case default values (for batch tests)
+/// For now, the checks only validate API responses, rather than complete and
+/// successful execution (e.g. transaction check won't verify that coins were
+/// correctly sent and received)
+const string DEFAULT_COIN_PAIR = "btc_xmr";
+
 /// Test cases: Check for expected output
 int test_rate(string coin_pair, bool verbose = false);
 int test_depositLimit(string coin_pair, bool verbose = false);
@@ -38,8 +44,10 @@ int test_createTransaction(string address_out, double amount, string coin_pair,
 	string api_public_key = "", bool verbose = false);
 int test_cancelTransaction_obj api_cancelTransaction(string address_in,
 	bool verbose = false);
+#endif // 0
 
 /// Test-case batches
-#endif // 0
+/// These are relatively automatic and use preset values defined above
+int test_all(bool verbose = false);
 
 #endif // SHAPESHIFT_API_DEBUG_INCLUDED
