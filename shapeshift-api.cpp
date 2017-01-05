@@ -7,6 +7,7 @@
 #include <cassert>
 #include "http.h"
 #include "json.h"
+#include "logger.h"
 
 /// TODO:
 /// - Optimize code (e.g. to pass pointers rather than objects)
@@ -94,6 +95,12 @@ api_depositLimit_obj api_depositLimit(string coin_pair)
 /// This gets the market info (pair, rate, limit, minimum limit, miner fee)
 vector<api_marketInfo_obj> api_marketInfo(string coin_pair)
 {
+	/// Calling this function without an argument (the empty string) will
+	/// return multiple coin-pairs and may take a significant time to process;
+	/// thus, a warning is provided.
+	log("api_marketInfo called with empty string; this may take a while...",
+		MessageType::warning);
+
 	/// API call
 	string json_marketInfo_raw =
 		http_get(URL_API_MARKET_INFO + coin_pair);
