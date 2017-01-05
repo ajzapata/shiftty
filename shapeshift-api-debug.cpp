@@ -20,7 +20,7 @@ int test_rate(string coin_pair, bool verbose)
 		cerr << "obj.coin_pair = " << obj.coin_pair << endl;
 		cerr << "obj.rate = " << obj.rate << endl;
 		cerr << "obj.error = " << obj.error << endl;
-		cerr << "##### END TESTING api_rate #####" << endl << endl;
+		cerr << "##### END TESTING api_rate #####" << endl;
 	}
 
 	return TEST_OK;
