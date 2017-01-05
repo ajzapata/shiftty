@@ -8,12 +8,11 @@ using namespace std;
 
 int test_rate(string coin_pair, bool verbose)
 {
-	int retval;
-
 	api_rate_obj obj = api_rate(coin_pair);
 
 	/// Check for API errors
-	retval = obj.error != "" ? TEST_API_ERR : TEST_OK;
+	int i_retval = obj.error != "" ? TEST_API_ERR : TEST_OK;
+	string s_retval = obj.error != "" ? "TEST_API_ERR" : "TEST_OK";
 
 	/// Print API call output
 	if (verbose)
@@ -22,6 +21,7 @@ int test_rate(string coin_pair, bool verbose)
 		cerr << "Function arguments:" << endl;
 		cerr << "coin_pair: " << coin_pair << endl;
 		cerr << "Function output:" << endl;
+		cerr << "retval = " << s_retval << endl;
 		if (obj.error != "") /// API error
 		{
 			cerr << "obj.coin_pair = (UNDEFINED)" << endl;
@@ -36,5 +36,5 @@ int test_rate(string coin_pair, bool verbose)
 		cerr << "##### END TESTING api_rate #####" << endl;
 	}
 
-	return retval;
+	return i_retval;
 }
