@@ -36,7 +36,7 @@ using namespace std;
 
 int main(int argc, const char* argv[])
 {
-	test_rate("btc_xmrd", true);
+	test_depositLimit("btc_xmr", true);
 
 	int breakpointHere = 0;
 	log("Hello world!");
