@@ -221,6 +221,41 @@ int test_transactionStatus(string address_in, bool verbose)
 	return i_retval;
 }
 
+/// Testing incomplete: For best results, this test requires a live transaction
+int test_timeRemaining(string deposit_address, bool verbose)
+{
+    api_timeRemaining_obj obj = api_timeRemaining(deposit_address);
+
+	/// Check for API errors
+	int i_retval = obj.error != "" ? TEST_API_ERR : TEST_OK;
+	string s_retval = obj.error != "" ? "TEST_API_ERR" : "TEST_OK";
+
+	/// Print API call output
+	if (verbose)
+	{
+		cerr << "##### TESTING api_timeRemaining #####" << endl;
+		cerr << "Function arguments:" << endl;
+		cerr << "deposit_address = " << deposit_address << endl;
+		cerr << "Function output:" << endl;
+		cerr << "retval = " << s_retval << endl;
+		if (obj.error != "") /// API error
+		{
+			cerr << "obj.status = (UNDEFINED)" << endl;
+			cerr << "obj.seconds_remaining = (UNDEFINED)" << endl;
+		}
+		else
+		{
+			cerr << "obj.status = " << obj.status << endl;
+			cerr << "obj.seconds_remaining = " << obj.seconds_remaining
+				<< endl;
+		}
+		cerr << "obj.error = " << obj.error << endl;
+		cerr << "##### END TESTING api_timeRemaining #####" << endl;
+	}
+
+	return i_retval;
+}
+
 /// Test-case batches
 
 int test_all(bool verbose)
