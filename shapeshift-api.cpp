@@ -33,12 +33,12 @@ api_rate_obj api_rate(string coin_pair)
 	if (API_THROTTLE_ENABLED) api_throttle();
 
 	/// API call
-	string json_rate_raw = http_get(URL_API_RATE + coin_pair);
+	string json_data_raw = http_get(URL_API_RATE + coin_pair);
 
 	/// Interpret and extract JSON data
 	Json::Reader json_reader;
 	Json::Value json_data;
-	assert(json_reader.parse(json_rate_raw, json_data));
+	assert(json_reader.parse(json_data_raw, json_data));
 
 	/// Create API object
 	api_rate_obj obj;
