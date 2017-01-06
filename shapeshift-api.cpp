@@ -64,30 +64,19 @@ api_depositLimit_obj api_depositLimit(string coin_pair)
 	if (API_THROTTLE_ENABLED) api_throttle();
 
 	/// API call
-	string json_depositLimit_raw =
-		http_get(URL_API_DEPOSIT_LIMIT + coin_pair);
+	string json_data_raw = http_get(URL_API_DEPOSIT_LIMIT + coin_pair);
 
 	/// Interpret and extract JSON data
-	JSON json_depositLimit;
-	json_depositLimit.importRaw(json_depositLimit_raw);
-
-	string s_pair, s_min, s_max, s_error;
-
-	s_pair = json_depositLimit.getItem("pair").value();
-	s_min = json_depositLimit.getItem("min").value();
-	s_max = json_depositLimit.getItem("limit").value();
-	s_error = json_depositLimit.getItem("error").value();
-
-	/// Convert string-doubles to doubles
-	double d_min = strtod(s_min.c_str(), NULL);
-	double d_max = strtod(s_max.c_str(), NULL);
+	Json::Reader json_reader;
+	Json::Value json_data;
+	assert(json_reader.parse(json_data_raw, json_data));
 
 	/// Create API object
 	api_depositLimit_obj obj;
-	obj.coin_pair = s_pair;
-	obj.limit_min = d_min;
-	obj.limit_max = d_max;
-	obj.error = s_error;
+	obj.coin_pair = json_data["pair"].asString();
+	obj.limit_min = strtod(json_data["min"].asCString(), NULL);
+	obj.limit_max = strtod(json_data["limit"].asCString(), NULL);
+	obj.error = json_data["error"].asString();
 
 	return obj;
 }
