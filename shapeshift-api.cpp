@@ -40,20 +40,14 @@ api_rate_obj api_rate(string coin_pair)
 	Json::Value json_data;
 	assert(json_reader.parse(json_rate_raw, json_data));
 
-	string s_pair, s_rate, s_error;
-
-	s_pair = json_data["pair"].asString();
-	s_rate = json_data["rate"].asString();
-	s_error = json_data["error"].asString();
-
-	/// Convert rate from string to double
-	double d_rate = strtod(s_rate.c_str(), NULL);
-
 	/// Create API object
 	api_rate_obj obj;
-	obj.coin_pair = s_pair;
-	obj.rate = d_rate;
-	obj.error = s_error;
+	obj.coin_pair = json_data["pair"].asString();
+	obj.rate = strtod(json_data["rate"].asCString(), NULL);
+		/// Using JsonCpp's Value::asDouble() doesn't work for "rate" since
+		/// the decimal value is quoted in the source JSON and thus
+		/// considered a string.
+	obj.error = json_data["error"].asString();
 
 	return obj;
 }
