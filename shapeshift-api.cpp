@@ -8,6 +8,8 @@
 #include "http.h"
 #include "json.h"
 #include "logger.h"
+#include "json/json.h"
+#include "json/json-forwards.h"
 
 /// TODO:
 /// - Optimize code (e.g. to pass pointers rather than objects)
@@ -34,19 +36,18 @@ api_rate_obj api_rate(string coin_pair)
 	string json_rate_raw = http_get(URL_API_RATE + coin_pair);
 
 	/// Interpret and extract JSON data
-	JSON json_rate;
-	json_rate.importRaw(json_rate_raw);
+	Json::Reader json_reader;
+	Json::Value json_data;
+	assert(json_reader.parse(json_rate_raw, json_data));
 
 	string s_pair, s_rate, s_error;
 
-	s_pair = json_rate.getItem("pair").value();
-	s_rate = json_rate.getItem("rate").value();
-	s_error = json_rate.getItem("error").value();
+	s_pair = json_data["pair"].asString();
+	s_rate = json_data["rate"].asString();
+	s_error = json_data["error"].asString();
 
 	/// Convert rate from string to double
 	double d_rate = strtod(s_rate.c_str(), NULL);
-
-	//delete cs_rate;
 
 	/// Create API object
 	api_rate_obj obj;
