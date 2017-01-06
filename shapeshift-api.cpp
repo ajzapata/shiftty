@@ -96,25 +96,19 @@ vector<api_marketInfo_obj> api_marketInfo(string coin_pair)
 		MessageType::warning);
 
 	/// API call
-	string json_marketInfo_raw =
+	string json_data_raw =
 		http_get(URL_API_MARKET_INFO + coin_pair);
 
 	/// Interpret and extract JSON data
-	JSON json_marketInfo;
-	json_marketInfo.importRaw(json_marketInfo_raw);
+	Json::Reader json_reader;
+	Json::Value json_data;
+	assert(json_reader.parse(json_data_raw, json_data));
 
     /// Unlike other API calls, the JSON object returned can have multiple
     /// coin-pairs if coin_pair string is not given. So we treat everything as
     /// a vector of api_marketInfo_obj objects
 
     vector<api_marketInfo_obj> v_obj;
-
-	/// Similarly, the JSON object must be interpreted differently to account
-	/// for these "duplicate" pairs. That is, each coin pair is stored in the
-	/// object as duplicate values (mostly due to how the code was
-	/// implemented), so the getItem function isn't usable. So the values are
-	/// manually retrieved in order, with "name" values first and "value"
-	/// values immediately following.
 
 	/// The Shapeshift API responds differently when given a valid coin pair,
 	/// an invalid coin pair, and no argument. The order of fields differ
@@ -123,77 +117,52 @@ vector<api_marketInfo_obj> api_marketInfo(string coin_pair)
 	/// this by first evaluating the presence of an "error" field, then
 	/// checking for duplicate fields (i.e. having a large amount of pairs).
 
-	JSON_item i_pair, i_rate, i_minerFee, i_min, i_max, i_qmax, i_error;
-	string s_pair;
-	double d_rate, d_minerFee, d_min, d_max, d_qmax;
-	api_marketInfo_obj obj;
-	if (json_marketInfo.getItem("error") != JSON_ITEM_EMPTY) /// Invalid pair
-	{
-		i_error = json_marketInfo.getItem("error");
+	/// JSON: objects -> {...}, arrays -> [...], array of objects -> [{...}]
 
+	api_marketInfo_obj obj;
+	if (json_data.isObject() && json_data["error"].asString() != "") /// Error
+	{
 		/// No need to define the other values, since the error message should
-		/// be checked first before attempting to read the other valies.
-		obj.error = i_error.value();
+		/// be checked first before attempting to read the other values.
+		obj.error = json_data["error"].asString();
 		v_obj.push_back(obj);
 	}
-	else if (json_marketInfo.items().size() > 6) /// No argument given (SLOW!)
+	else if (json_data.isArray()) /// No argument given (SLOW!)
 	{
-		for (size_t i = 0; i < json_marketInfo.items().size(); i++)
+		/// When no argument is given, the API returns an array of objects
+		/// representing a list of all recognized coin-pairs. For any other
+		/// argument, the API returns a specified coin-pair object or an object
+		/// with only an error response.
+
+		/// Must use Json::Value::ArrayIndex as iterator type; otherwise, you
+		/// get an "ambiguous operator[]" error
+
+		for (Json::Value::ArrayIndex i = 0; i < json_data.size(); i++)
 		{
-			/// Iterate through the item-pairs and increment iterator as we go.
-			/// This is safe as long as there are no uneven pairs in the API
-			/// response.
-			i_rate = json_marketInfo.items()[i++];
-			i_qmax = json_marketInfo.items()[i++];
-			i_pair = json_marketInfo.items()[i++];
-			i_max = json_marketInfo.items()[i++];
-			i_min = json_marketInfo.items()[i++];
-			i_minerFee = json_marketInfo.items()[i]; // incr. on loop-continue
-
-			/// Interpret item-pairs where necessary
-			s_pair = i_pair.value();
-			d_rate = strtod(i_rate.value().c_str(), NULL);
-			d_minerFee = strtod(i_minerFee.value().c_str(), NULL);
-			d_min = strtod(i_min.value().c_str(), NULL);
-			d_max = strtod(i_max.value().c_str(), NULL);
-			d_qmax = strtod(i_qmax.value().c_str(), NULL);
-
 			/// Fill API object fields
-			obj.coin_pair = s_pair;
-			obj.rate = d_rate;
-			obj.limit_min = d_min;
-			obj.limit_qmax = d_qmax;
-			obj.limit_max = d_max;
-			obj.minerfee = d_minerFee;
+			obj.coin_pair = json_data[i]["pair"].asString();
+			obj.rate = strtod(json_data[i]["rate"].asCString(), NULL);
+				/// In this case, "rate" is a quoted decimal number
+			obj.limit_min = json_data[i]["min"].asDouble();
+			obj.limit_qmax = json_data[i]["maxLimit"].asDouble();
+			obj.limit_max = json_data[i]["limit"].asDouble();
+			obj.minerfee = json_data[i]["minerFee"].asDouble();
 
 			v_obj.push_back(obj);
 		}
 	}
 	else /// Valid pair
 	{
-		/// Retrieve item-pairs
-		i_pair = json_marketInfo.items()[0];
-		i_rate = json_marketInfo.items()[1];
-		i_minerFee = json_marketInfo.items()[2];
-		i_qmax = json_marketInfo.items()[3];
-		i_min = json_marketInfo.items()[4];
-		i_max = json_marketInfo.items()[5];
-
-		/// Interpret item-pairs where necessary
-		s_pair = i_pair.value();
-		d_rate = strtod(i_rate.value().c_str(), NULL);
-		d_minerFee = strtod(i_minerFee.value().c_str(), NULL);
-		d_min = strtod(i_min.value().c_str(), NULL);
-		d_max = strtod(i_max.value().c_str(), NULL);
-		d_qmax = strtod(i_qmax.value().c_str(), NULL);
-
 		/// Fill API object fields
-		obj.coin_pair = s_pair;
-		obj.rate = d_rate;
-		obj.limit_min = d_min;
-		obj.limit_qmax = d_qmax;
-		obj.limit_max = d_max;
-		obj.minerfee = d_minerFee;
+		obj.coin_pair = json_data["pair"].asString();
+		obj.rate = json_data["rate"].asDouble();
+			/// Unlike some API calls, the decimal numbers here aren't quoted
+			/// in the source JSON, so they can be directly cast to the double
+			/// type as done by Value::asDouble().
+		obj.limit_min = json_data["minimum"].asDouble();
+		obj.limit_qmax = json_data["limit"].asDouble();
+		obj.limit_max = json_data["maxLimit"].asDouble();
+		obj.minerfee = json_data["minerFee"].asDouble();
 
 		v_obj.push_back(obj);
 	}
