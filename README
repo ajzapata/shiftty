@@ -9,3 +9,8 @@ using its API. It was originally intended to be a simple interactive terminal
 that reduces mouse movements and clicks to text commands. After basic
 functionality is complete, further updates will act as modular components
 or expand compatability.
+
+External Libraries:
+- JsonCpp [https://github.com/open-source-parsers/jsoncpp]
+	Amalgamated headers sourced from commit
+	<81065748e315026017c633fca1bfc57cba5b246a>
