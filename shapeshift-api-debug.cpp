@@ -265,8 +265,16 @@ int test_all(bool verbose)
 	int retval_rate = test_rate(DEFAULT_COIN_PAIR, verbose);
 	int retval_depositLimit = test_depositLimit(DEFAULT_COIN_PAIR, verbose);
 	int retval_marketInfo = test_marketInfo(DEFAULT_COIN_PAIR, verbose);
+	int retval_recentTransactions = test_recentTransactions(DEFAULT_AMOUNT,
+		verbose);
+	int retval_transactionStatus = test_transactionStatus(DEFAULT_ADDRESS_IN,
+		verbose);
+	int retval_timeRemaining = test_timeRemaining(DEFAULT_DEPOSIT_ADDRESS,
+		verbose);
 
-	bool pass = !(retval_rate || retval_depositLimit || retval_marketInfo);
+	bool pass = !(retval_rate || retval_depositLimit || retval_marketInfo ||
+		retval_recentTransactions || !(retval_transactionStatus) ||
+		!(retval_timeRemaining)); // negated values need "live" (better) data
 	string s_pass = pass ? "PASS" : "FAIL";
 
 	cerr << "RESULT: " << s_pass << endl;
@@ -277,6 +285,12 @@ int test_all(bool verbose)
 	cerr << "[" << retval_rate << "] test_rate" << endl;
 	cerr << "[" << retval_depositLimit << "] test_depositLimit" << endl;
 	cerr << "[" << retval_marketInfo << "] test_marketInfo" << endl;
+	cerr << "[" << retval_recentTransactions << "] test_recentTransactions"
+		<< endl;
+	cerr << "[" << retval_transactionStatus << "] test_transactionStatus*"
+		<< endl;
+	cerr << "[" << retval_timeRemaining << "] test_timeRemaining*" << endl;
+	cerr << "*Non-zero number indicates passed test." << endl;
 
 	cerr << "##### END BATCH TEST ALL #####" << endl;
 

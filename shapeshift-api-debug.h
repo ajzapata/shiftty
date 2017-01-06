@@ -19,6 +19,9 @@ const int TEST_API_UNEXPECTED_VALUE		= 2;
 /// successful execution (e.g. transaction check won't verify that coins were
 /// correctly sent and received)
 const string DEFAULT_COIN_PAIR = "btc_xmr";
+const uint8_t DEFAULT_AMOUNT = 5;
+const string DEFAULT_ADDRESS_IN = "NULL";
+const string DEFAULT_DEPOSIT_ADDRESS = "NULL";
 
 /// Test cases: Check for expected output
 int test_rate(string coin_pair, bool verbose = false);
