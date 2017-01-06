@@ -175,6 +175,52 @@ int test_recentTransactions(uint8_t amount, bool verbose)
 	return i_retval;
 }
 
+/// Testing incomplete: For best results, this test requires a live transaction
+int test_transactionStatus(string address_in, bool verbose)
+{
+    api_transactionStatus_obj obj = api_transactionStatus(address_in);
+
+	/// Check for API errors
+	int i_retval = obj.error != "" ? TEST_API_ERR : TEST_OK;
+	string s_retval = obj.error != "" ? "TEST_API_ERR" : "TEST_OK";
+
+	/// Print API call output
+	if (verbose)
+	{
+		cerr << "##### TESTING api_transactionStatus #####" << endl;
+		cerr << "Function arguments:" << endl;
+		cerr << "address_in = " << address_in << endl;
+		cerr << "Function output:" << endl;
+		cerr << "retval = " << s_retval << endl;
+		if (obj.error != "") /// API error
+		{
+			cerr << "obj.status = (UNDEFINED)" << endl;
+			cerr << "obj.address_in = (UNDEFINED)" << endl;
+			cerr << "obj.address_out = (UNDEFINED)" << endl;
+			cerr << "obj.coin_in = (UNDEFINED)" << endl;
+			cerr << "obj.amount_in = (UNDEFINED)" << endl;
+			cerr << "obj.coin_out = (UNDEFINED)" << endl;
+			cerr << "obj.amount_out = (UNDEFINED)" << endl;
+			cerr << "obj.tx_id = (UNDEFINED)" << endl;
+		}
+		else
+		{
+			cerr << "obj.status = " << obj.status << endl;
+			cerr << "obj.address_in = " << obj.address_in << endl;
+			cerr << "obj.address_out = " << obj.address_out << endl;
+			cerr << "obj.coin_in = " << obj.coin_in << endl;
+			cerr << "obj.amount_in = " << obj.amount_in << endl;
+			cerr << "obj.coin_out = " << obj.coin_out << endl;
+			cerr << "obj.amount_out = " << obj.amount_out << endl;
+			cerr << "obj.tx_id = " << obj.tx_id << endl;
+		}
+		cerr << "obj.error = " << obj.error << endl;
+		cerr << "##### END TESTING api_transactionStatus #####" << endl;
+	}
+
+	return i_retval;
+}
+
 /// Test-case batches
 
 int test_all(bool verbose)
