@@ -128,6 +128,53 @@ int test_marketInfo(string coin_pair, bool verbose)
 	return i_retval;
 }
 
+int test_recentTransactions(uint8_t amount, bool verbose)
+{
+	/// Note that the API function returns a vector of objects
+    vector<api_recentTransactions_obj> obj = api_recentTransactions(amount);
+
+	/// Check for API errors; the error is reported in the first object
+	int i_retval = obj[0].error != "" ? TEST_API_ERR : TEST_OK;
+	string s_retval = obj[0].error != "" ? "TEST_API_ERR" : "TEST_OK";
+
+	/// Print API call output
+	if (verbose)
+	{
+		cerr << "##### TESTING api_recentTransactions #####" << endl;
+		cerr << "Function arguments:" << endl;
+		cerr << "amount = " << amount << endl;
+		cerr << "Function output:" << endl;
+		cerr << "retval = " << s_retval << endl;
+		if (obj[0].error != "") /// API error
+		{
+			cerr << "obj[0].coin_in = (UNDEFINED)" << endl;
+			cerr << "obj[0].coin_out = (UNDEFINED)" << endl;
+			cerr << "obj[0].amount = (UNDEFINED)" << endl;
+			cerr << "obj[0].timestamp_sec = (UNDEFINED)" << endl;
+			cerr << "obj[0].error = " << obj[0].error << endl;
+		}
+		else
+		{
+			string objstr;
+
+			/// We iterate through all the transactions
+			for (size_t i = 0; i < obj.size(); i++)
+			{
+				objstr = "obj[" + to_string(i) + "]";
+				cerr << objstr + ".coin_in = " << obj[i].coin_in << endl;
+				cerr << objstr + ".coin_out = " << obj[i].coin_out << endl;
+				cerr << objstr + ".amount = " << obj[i].amount << endl;
+				cerr << objstr + ".timestamp_sec = "
+					<< obj[i].timestamp_sec << endl;
+				cerr << objstr + ".error = " << obj[i].error << endl;
+			}
+		}
+		cerr << "##### END TESTING api_recentTransactions #####" << endl;
+	}
+
+	return i_retval;
+}
+
 /// Test-case batches
 
 int test_all(bool verbose)
