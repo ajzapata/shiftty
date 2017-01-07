@@ -314,33 +314,30 @@ api_transactionStatus_obj api_transactionStatus(string address_in)
 /// it will include the "?dt=destTagNUM" appended on the end, and you will
 /// need to use the URIEncodeComponent() function on the address before
 /// sending it in as a param, to get a successful response.
-api_timeRemaining_obj api_timeRemaining(string deposit_address)
+api_timeRemaining_obj api_timeRemaining(string deposit_address) /// TODO: TEST
 {
 	/// API Throttle
 	if (API_THROTTLE_ENABLED) api_throttle();
 
 	/// API call
-	string json_timeRemaining_raw =
+	string json_data_raw =
 		http_get(URL_API_TIME_REMAINING + deposit_address);
 
 	/// Interpret and extract JSON data
-	JSON json_timeRemaining;
-	json_timeRemaining.importRaw(json_timeRemaining_raw);
+	Json::Reader json_reader;
+	Json::Value json_data;
+	assert(json_reader.parse(json_data_raw, json_data));
 
 	api_timeRemaining_obj obj;
 
-	JSON_item i_status = json_timeRemaining.getItem("status");
-	JSON_item i_seconds = json_timeRemaining.getItem("seconds_remaining");
-	JSON_item i_error = json_timeRemaining.getItem("error");
-
-	if (i_error != JSON_ITEM_EMPTY)
+	if (json_data.size() == 1) /// Error
 	{
-		obj.error = i_error.value();
+		obj.error = json_data["error"].asString();
 	}
 	else
 	{
-		obj.status = i_status.value();
-		obj.seconds_remaining = atoi(i_seconds.value().c_str());
+		obj.status = json_data["status"].asString();
+		obj.seconds_remaining = json_data["seconds_remaining"].asInt();
 	}
 
 	return obj;
