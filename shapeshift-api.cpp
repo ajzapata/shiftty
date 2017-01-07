@@ -227,89 +227,79 @@ vector<api_recentTransactions_obj> api_recentTransactions(uint8_t amount)
 /// Status of deposit to address (api_transactionStatus):
 /// This returns the status of the most recent deposit transaction to the
 /// address.
+/// TODO: Test using live data (currently untested using live data)
 api_transactionStatus_obj api_transactionStatus(string address_in)
 {
 	/// API Throttle
 	if (API_THROTTLE_ENABLED) api_throttle();
 
 	/// API call
-	string json_transactionStatus_raw =
+	string json_data_raw =
 		http_get(URL_API_TRANSACTION_STATUS + address_in);
 
 	/// Interpret and extract JSON data
-	JSON json_transactionStatus;
-	json_transactionStatus.importRaw(json_transactionStatus_raw);
+	Json::Reader json_reader;
+	Json::Value json_data;
+	assert(json_reader.parse(json_data_raw, json_data));
 
 	api_transactionStatus_obj obj;
 
 	/// The API responds differently depending on the current status of the
-	/// transactions. In all cases, the "status" item is present, so we use
-	/// this to determine how to proceed (except regular errors).
+	/// transactions. In most cases, the "status" item is present, so we use
+	/// this to determine how to proceed.
 
-	JSON_item i_status, i_address, i_withdraw, i_incomingCoin, i_incomingType,
-		i_outgoingCoin, i_outgoingType, i_transaction, i_error;
-	string s_status, s_address, s_withdraw, s_incomingType, s_outgoingType,
-		s_transaction, s_error;
-	double d_incomingCoin, d_outgoingCoin;
-
-	/// Safe to find pairs even if they aren't present in the API response;
-	/// they would resolve to empty strings.
-	i_status = json_transactionStatus.getItem("status");
-	i_address = json_transactionStatus.getItem("address");
-	i_withdraw = json_transactionStatus.getItem("withdraw");
-	i_incomingCoin = json_transactionStatus.getItem("incomingCoin");
-	i_incomingType = json_transactionStatus.getItem("incomingType");
-	i_outgoingCoin = json_transactionStatus.getItem("outgoingCoin");
-	i_outgoingType = json_transactionStatus.getItem("outgoingType");
-	i_transaction = json_transactionStatus.getItem("transaction");
-	i_error = json_transactionStatus.getItem("error");
-
-	/// Interpret item-pairs as strings (which they already are, but still...)
-	s_status = i_status.value();
-	s_address = i_address.value();
-	s_withdraw = i_withdraw.value();
-	s_incomingType = i_incomingType.value();
-	s_outgoingType = i_outgoingType.value();
-	s_transaction = i_transaction.value();
-	s_error = i_error.value();
-
-	/// Interpret item-pairs as doubles; checks are added just in case.
-    d_incomingCoin = i_incomingCoin == JSON_ITEM_EMPTY ? -1.00 :
-		strtod(i_incomingCoin.value().c_str(), NULL);
-	d_outgoingCoin = i_outgoingCoin == JSON_ITEM_EMPTY ? -1.00 :
-		strtod(i_outgoingCoin.value().c_str(), NULL);
-
-	/// First check for "error" field WITHOUT a status field (indicating a
-	/// "classic" error, such as providing no argument (empty-string)).
-	if (i_error != JSON_ITEM_EMPTY && i_status == JSON_ITEM_EMPTY)
+	/// TODO: Optimize (e.g. switch statement using enum, less repetition)
+	if (json_data.size() == 1)
 	{
-		obj.error = s_error;
+		/// Error without a "status" field; it is assumed to be the only item.
+		obj.error = json_data["error"].asString();
 	}
-	else if (s_status == "no_deposits") /// No deposits received
+	else if (json_data["status"].asString() == "no_deposits")
 	{
-        obj.status = s_status;
-        obj.address_in = s_address;
+		/// No deposits received
+        obj.status = json_data["status"].asString();
+        obj.address_in = json_data["address"].asString();
 	}
-	else if (s_status == "received") /// Deposit received & is being processed
+	else if (json_data["status"].asString() == "received")
 	{
-        obj.status = s_status;
-        obj.address_in = s_address;
+		/// Deposit received and is being processed
+        obj.status = json_data["status"].asString();
+        obj.address_in = json_data["address"].asString();
 	}
-	else if (s_status == "complete") /// Transaction complete
+	else if (json_data["status"].asString() == "complete")
 	{
-		obj.status = s_status;
-		obj.address_in = s_address;
-		obj.address_out = s_withdraw;
-		obj.coin_in = s_incomingType;
-		obj.amount_in = d_incomingCoin;
-		obj.coin_out = s_outgoingType;
-		obj.amount_out = d_outgoingCoin;
-		obj.tx_id = s_transaction;
+		/// Transaction complete
+		/// TODO: Look at results from live tests to see if decimal quantities
+		/// are strings (in quotes) or doubles, in order to replace the
+		/// currently-used expressions
+        obj.status = json_data["status"].asString();
+        obj.address_in = json_data["address"].asString();
+		obj.address_out = json_data["withdraw"].asString();
+		obj.coin_in = json_data["incomingType"].asString();
+		obj.amount_in = json_data["incomingCoin"].isString() ?
+			strtod(json_data["incomingCoin"].asCString(), NULL) :
+			json_data["incomingCoin"].asDouble();
+		obj.coin_out = json_data["outgoingType"].asString();
+		obj.amount_out = json_data["outgoingCoin"].isString() ?
+			strtod(json_data["outgoingCoin"].asCString(), NULL) :
+			json_data["outgoingCoin"].asDouble();
+		obj.tx_id = json_data["transaction"].asString();
 	}
-	else if (s_status == "failed" || s_status == "error") /// Tx failed
+	else if (json_data["status"].asString() == "failed")
 	{
-		obj.status = s_status; // Can also be "error"; this was undocumented
-		obj.error = s_error;
+		/// Transaction failed
+        obj.status = json_data["status"].asString();
+		obj.error = json_data["error"].asString();
+	}
+	else if (json_data["status"].asString() == "error")
+	{
+		/// General error; this was undocumented and seems to be in place of
+		/// the generic one-item "error" API response, with the addition of a
+		/// more descriptive error message (e.g. to not send coins to the given
+		/// invalid address) and the address as-interpreted by the API.
+		obj.status = json_data["status"].asString();
+		obj.address_in = json_data["address"].asString();
+		obj.error = json_data["error"].asString();
 	}
 
 	return obj;
