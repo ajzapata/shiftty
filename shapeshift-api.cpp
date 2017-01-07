@@ -177,59 +177,46 @@ vector<api_recentTransactions_obj> api_recentTransactions(uint8_t amount)
 	/// API Throttle
 	if (API_THROTTLE_ENABLED) api_throttle();
 
-	/// Amount must be between 1 and 50 inclusive.
-	if (amount < 1 || amount > 50)
-	{
-		/// Return custom error message for API call to fail safely
-		api_recentTransactions_obj obj;
-		obj.error = "[SELF] Transaction amount out of range.";
-		vector<api_recentTransactions_obj> v_obj;
-		v_obj.push_back(obj);
-		return v_obj;
+	/// Amount should be between 1 and 50 inclusive. In reality, the API
+	/// rounds the given amount to the nearest valid number (as of January 6,
+	/// 2017), but to maintain consistency in case this behavior changes, this
+	/// function does the rounding automatically before the API call is made.
+	/// This API call never returns an error message either(?); negative or
+	/// non-numeric input is replaced by the default amount of 5 (not possible
+	/// to input in this function and thus not handled).
+	if (amount < 1) {
+		log("api_recentTransactions: amount < 1. Defaulting to amount = 5",
+			MessageType::warning);
+		amount = 5;
+	}
+	else if (amount > 50) {
+		log("api_recentTransactions: amount > 50. Defaulting to amount = 50",
+			MessageType::warning);
+		amount = 50;
 	}
 
 	/// API call
-	string json_recentTransactions_raw =
+	string json_data_raw =
 		http_get(URL_API_RECENT_TRANSACTIONS + to_string(amount));
 
 	/// Interpret and extract JSON data
-	JSON json_recentTransactions;
-	json_recentTransactions.importRaw(json_recentTransactions_raw);
+	Json::Reader json_reader;
+	Json::Value json_data;
+	assert(json_reader.parse(json_data_raw, json_data));
 
 	vector<api_recentTransactions_obj> v_obj;
 
-	/// Check for error field first
-	if (json_recentTransactions.getItem("error") != JSON_ITEM_EMPTY)
-	{
-		api_recentTransactions_obj obj;
-		obj.error = json_recentTransactions.getItem("error").value();
-		v_obj.push_back(obj);
-		return v_obj;
-	}
-
-	JSON_item i_curIn, i_curOut, i_timestamp, i_amount;
-	string s_curIn, s_curOut;
-	double d_timestamp, d_amount;
 	api_recentTransactions_obj obj;
-	for (size_t i = 0; i < json_recentTransactions.items().size(); i++)
+	for (Json::Value::ArrayIndex i = 0; i < json_data.size(); i++)
 	{
-		/// Retrieve item-pairs
-		i_curIn = json_recentTransactions.items()[i++];
-		i_curOut = json_recentTransactions.items()[i++];
-		i_timestamp = json_recentTransactions.items()[i++];
-		i_amount = json_recentTransactions.items()[i];
-
-		/// Interpret item-pairs where necessary
-		s_curIn = i_curIn.value();
-		s_curOut = i_curOut.value();
-		d_timestamp = strtod(i_timestamp.value().c_str(), NULL);
-		d_amount = strtod(i_amount.value().c_str(), NULL);
+		/// Regardless of amount, the source JSON has the transaction objects
+		/// in an array ("array of objects" form).
 
 		/// Fill API object fields
-		obj.coin_in = s_curIn;
-		obj.coin_out = s_curOut;
-		obj.timestamp_sec = d_timestamp;
-		obj.amount = d_amount;
+		obj.coin_in = json_data[i]["curIn"].asString();
+		obj.coin_out = json_data[i]["curOut"].asString();
+		obj.timestamp_sec = json_data[i]["timestamp"].asDouble();;
+		obj.amount = json_data[i]["amount"].asDouble();
 
 		v_obj.push_back(obj);
 	}
