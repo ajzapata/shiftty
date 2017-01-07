@@ -42,11 +42,18 @@ api_rate_obj api_rate(string coin_pair)
 
 	/// Create API object
 	api_rate_obj obj;
-	obj.coin_pair = json_data["pair"].asString();
-	obj.rate = strtod(json_data["rate"].asCString(), NULL);
-		/// Using JsonCpp's Value::asDouble() doesn't work for "rate" since
-		/// the decimal value is quoted in the source JSON and thus
-		/// considered a string.
+	if (json_data["error"].asString().empty())
+	{
+		/// Although JsonCpp uses default values (as "null values") when an
+		/// non-existant array element is dereferenced, in the cases where
+		/// type-conversion is done manually (e.g. "rate" below), the default
+		/// value is incompatible across types.
+		obj.coin_pair = json_data["pair"].asString();
+		obj.rate = strtod(json_data["rate"].asCString(), NULL);
+			/// Using JsonCpp's Value::asDouble() doesn't work for "rate" since
+			/// the decimal value is quoted in the source JSON and thus
+			/// considered a string.
+	}
 	obj.error = json_data["error"].asString();
 
 	return obj;
@@ -73,9 +80,12 @@ api_depositLimit_obj api_depositLimit(string coin_pair)
 
 	/// Create API object
 	api_depositLimit_obj obj;
-	obj.coin_pair = json_data["pair"].asString();
-	obj.limit_min = strtod(json_data["min"].asCString(), NULL);
-	obj.limit_max = strtod(json_data["limit"].asCString(), NULL);
+	if (json_data["error"].asString().empty())
+	{
+		obj.coin_pair = json_data["pair"].asString();
+		obj.limit_min = strtod(json_data["min"].asCString(), NULL);
+		obj.limit_max = strtod(json_data["limit"].asCString(), NULL);
+	}
 	obj.error = json_data["error"].asString();
 
 	return obj;
@@ -207,6 +217,22 @@ vector<api_recentTransactions_obj> api_recentTransactions(uint8_t amount)
 	vector<api_recentTransactions_obj> v_obj;
 
 	api_recentTransactions_obj obj;
+
+	/// Check for potential API error object. There's no reason to believe they
+	/// exist in this form, but it's better than finding out the hard way...
+	if (json_data.isObject() && !json_data["error"].asString().empty())
+	{
+		obj.error = json_data["error"].asString();
+		v_obj.push_back(obj);
+		return v_obj;
+	}
+	else if (json_data.isArray() && !json_data[0]["error"].asString().empty())
+	{
+		obj.error = json_data[0]["error"].asString();
+		v_obj.push_back(obj);
+		return v_obj;
+	}
+
 	for (Json::Value::ArrayIndex i = 0; i < json_data.size(); i++)
 	{
 		/// Regardless of amount, the source JSON has the transaction objects
