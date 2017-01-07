@@ -209,7 +209,29 @@ int test_transactionStatus(string address_in, bool verbose)
 			cerr << "obj.amount_out = (UNDEFINED)" << endl;
 			cerr << "obj.tx_id = (UNDEFINED)" << endl;
 		}
-		else
+		else if (obj.status == "no_deposits")
+		{
+			cerr << "obj.status = " << obj.status << endl;
+			cerr << "obj.address_in = " << obj.address_in << endl;
+			cerr << "obj.address_out = (UNDEFINED)" << endl;
+			cerr << "obj.coin_in = (UNDEFINED)" << endl;
+			cerr << "obj.amount_in = (UNDEFINED)" << endl;
+			cerr << "obj.coin_out = (UNDEFINED)" << endl;
+			cerr << "obj.amount_out = (UNDEFINED)" << endl;
+			cerr << "obj.tx_id = (UNDEFINED)" << endl;
+		}
+		else if (obj.status == "received")
+		{
+			cerr << "obj.status = " << obj.status << endl;
+			cerr << "obj.address_in = " << obj.address_in << endl;
+			cerr << "obj.address_out = (UNDEFINED)" << endl;
+			cerr << "obj.coin_in = (UNDEFINED)" << endl;
+			cerr << "obj.amount_in = (UNDEFINED)" << endl;
+			cerr << "obj.coin_out = (UNDEFINED)" << endl;
+			cerr << "obj.amount_out = (UNDEFINED)" << endl;
+			cerr << "obj.tx_id = (UNDEFINED)" << endl;
+		}
+		else if (obj.status == "complete")
 		{
 			cerr << "obj.status = " << obj.status << endl;
 			cerr << "obj.address_in = " << obj.address_in << endl;
