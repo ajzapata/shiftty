@@ -2,10 +2,10 @@
 
 # Temporary files
 .http_response
-CHANGES.tmp
+*.tmp
 *.bak
 
-# Code::blocks IDE
+# Code::Blocks IDE
 
 bin/
 obj/
