@@ -179,9 +179,9 @@ api_transactionStatus_obj api_transactionStatus(string address_in);
 
 api_timeRemaining_obj api_timeRemaining(string deposit_address);
 
-#if 0
-
 vector<api_listCoins_obj> api_listCoins();
+
+#if 0
 
 vector<api_listTransactions_private_obj>
 api_listTransactions_private(string api_key, string address_in = "");

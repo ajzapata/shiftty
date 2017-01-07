@@ -30,8 +30,8 @@ int test_marketInfo(string coin_pair, bool verbose = false);
 int test_recentTransactions(uint8_t amount = 5, bool verbose = false);
 int test_transactionStatus(string address_in, bool verbose = false);
 int test_timeRemaining(string deposit_address, bool verbose = false);
-#if 0
 int test_listCoins(bool verbose = false);
+#if 0
 int test_listTransactions_private(string api_key, string address_in = "",
 	bool verbose = false);
 int test_validateAddress(string address, bool verbose = false);

@@ -284,6 +284,52 @@ int test_timeRemaining(string deposit_address, bool verbose)
 	return i_retval;
 }
 
+int test_listCoins(bool verbose)
+{
+	/// Note that the API function returns a vector of objects
+    vector<api_listCoins_obj> obj = api_listCoins();
+
+	/// Check for API errors; the error is reported in the first object
+	int i_retval = obj[0].error != "" ? TEST_API_ERR : TEST_OK;
+	string s_retval = obj[0].error != "" ? "TEST_API_ERR" : "TEST_OK";
+
+	/// Print API call output
+	if (verbose)
+	{
+		cerr << "##### TESTING api_listCoins #####" << endl;
+		cerr << "Function arguments:" << endl;
+		cerr << "(none)" << endl;
+		cerr << "Function output:" << endl;
+		cerr << "retval = " << s_retval << endl;
+		if (obj[0].error != "") /// API error
+		{
+			cerr << "obj[0].name = (UNDEFINED)" << endl;
+			cerr << "obj[0].symbol = (UNDEFINED)" << endl;
+			cerr << "obj[0].url_image = (UNDEFINED)" << endl;
+			cerr << "obj[0].status = (UNDEFINED)" << endl;
+			cerr << "obj[0].error = " << obj[0].error << endl;
+		}
+		else
+		{
+			string objstr;
+
+			/// We iterate through all the transactions
+			for (size_t i = 0; i < obj.size(); i++)
+			{
+				objstr = "obj[" + to_string(i) + "]";
+				cerr << objstr + ".name = " << obj[i].name << endl;
+				cerr << objstr + ".symbol = " << obj[i].symbol << endl;
+				cerr << objstr + ".url_image = " << obj[i].url_image << endl;
+				cerr << objstr + ".status = " << obj[i].status << endl;
+				cerr << objstr + ".error = " << obj[i].error << endl;
+			}
+		}
+		cerr << "##### END TESTING api_listCoins #####" << endl;
+	}
+
+	return i_retval;
+}
+
 /// Test-case batches
 
 int test_all(bool verbose)
@@ -299,10 +345,13 @@ int test_all(bool verbose)
 		verbose);
 	int retval_timeRemaining = test_timeRemaining(DEFAULT_DEPOSIT_ADDRESS,
 		verbose);
+	int retval_listCoins = test_listCoins(verbose);
 
+	/// Negated values need "live" (better) data (to verify function rather
+	/// than only verifying proper error recognition).
 	bool pass = !(retval_rate || retval_depositLimit || retval_marketInfo ||
 		retval_recentTransactions || !(retval_transactionStatus) ||
-		!(retval_timeRemaining)); // negated values need "live" (better) data
+		!(retval_timeRemaining) || retval_listCoins);
 	string s_pass = pass ? "PASS" : "FAIL";
 
 	cerr << "RESULT: " << s_pass << endl;
@@ -318,6 +367,7 @@ int test_all(bool verbose)
 	cerr << "[" << retval_transactionStatus << "] test_transactionStatus*"
 		<< endl;
 	cerr << "[" << retval_timeRemaining << "] test_timeRemaining*" << endl;
+	cerr << "[" << retval_listCoins << "] test_listCoins" << endl;
 	cerr << "*Non-zero number indicates passed test." << endl;
 
 	cerr << "##### END BATCH TEST ALL #####" << endl;

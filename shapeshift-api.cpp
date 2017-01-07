@@ -369,16 +369,67 @@ api_timeRemaining_obj api_timeRemaining(string deposit_address) /// TODO: TEST
 	return obj;
 }
 
-#if 0
-
 /// Get List of Supported Coins with Icon Links (api_listCoins):
 /// Allows anyone to get a list of all the currencies that Shapeshift
 /// currently supports at any given time. The list will include the name,
 /// symbol, availability status, and an icon link for each.
 vector<api_listCoins_obj> api_listCoins()
 {
+	/// The JSON output from the API call is in the form of an object where
+	/// each entry represents a supported currency and is paired with an object
+	/// containing information about it. The format of the output is unique in
+	/// that the names of the fields are part of the useful information being
+	/// retrieved and vary as much as the content they reference. Thus,
+	/// indexing is limited to evaluating the size of the object and
+	/// accounting for each entry. The current data-model used to represent
+	/// API output (i.e. structs and vectors of structs) treats this format
+	/// similar to "array of objects".
 
+	/// API Throttle
+	if (API_THROTTLE_ENABLED) api_throttle();
+
+	/// API call
+	string json_data_raw = http_get(URL_API_LIST_COINS);
+
+	/// Interpret and extract JSON data
+	Json::Reader json_reader;
+	Json::Value json_data;
+	assert(json_reader.parse(json_data_raw, json_data));
+
+	vector<api_listCoins_obj> v_obj;
+
+	api_listCoins_obj obj;
+
+	/// Check for errors
+	if (!json_data["error"].asString().empty())
+	{
+		obj.error = json_data["error"].asString();
+		v_obj.push_back(obj);
+		return v_obj;
+	}
+
+	/// Get names of members and iterate through them
+	vector<string> json_data_members = json_data.getMemberNames();
+	for (size_t i = 0; i < json_data_members.size(); i++)
+	{
+		string s = json_data_members[i];
+
+		/// Avoid inserting null members into API-object array
+		if (json_data[s].isNull()) continue;
+
+		/// Fill API object fields
+		obj.name = json_data[s]["name"].asString();
+		obj.symbol = json_data[s]["symbol"].asString();
+		obj.url_image = json_data[s]["image"].asString();
+		obj.status = json_data[s]["status"].asString();
+
+		v_obj.push_back(obj);
+	}
+
+	return v_obj;
 }
+
+#if 0
 
 /// Get List of Transactions with a PRIVATE API KEY
 /// (api_listTransactions_private):
