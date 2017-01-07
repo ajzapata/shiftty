@@ -33,7 +33,6 @@ int main(int argc, const char* argv[])
 	test_all(true);
 
 	int breakpointHere = 0;
-	log("Hello world!");
 
     return breakpointHere;
 }
