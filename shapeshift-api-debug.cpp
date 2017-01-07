@@ -194,8 +194,14 @@ int test_transactionStatus(string address_in, bool verbose)
 		cerr << "retval = " << s_retval << endl;
 		if (obj.error != "") /// API error
 		{
-			cerr << "obj.status = (UNDEFINED)" << endl;
-			cerr << "obj.address_in = (UNDEFINED)" << endl;
+			/// The status and address_in strings are frequently set when an
+			/// error occurs (e.g. invalid address or failed tx). Since C++
+			/// strings are default-constructed as empty-strings, it isn't
+			/// particularly hazardous to dereference them in this case; this
+			/// is considered temporary until a more rigorous testing system
+			/// can be established.
+			cerr << "obj.status = " << obj.status << endl;
+			cerr << "obj.address_in = " << obj.address_in << endl;
 			cerr << "obj.address_out = (UNDEFINED)" << endl;
 			cerr << "obj.coin_in = (UNDEFINED)" << endl;
 			cerr << "obj.amount_in = (UNDEFINED)" << endl;
