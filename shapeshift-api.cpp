@@ -6,7 +6,6 @@
 #include <cinttypes>
 #include <cassert>
 #include "http.h"
-#include "json.h"
 #include "logger.h"
 #include "json/json.h"
 #include "json/json-forwards.h"
