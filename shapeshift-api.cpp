@@ -28,9 +28,6 @@ using namespace std;
 /// transaction (miner) fee taken off every transaction.
 api_rate_obj api_rate(string coin_pair)
 {
-	/// API Throttle
-	if (API_THROTTLE_ENABLED) api_throttle();
-
 	/// API call
 	string json_data_raw = http_get(URL_API_RATE + coin_pair);
 
@@ -66,9 +63,6 @@ api_rate_obj api_rate(string coin_pair)
 /// the limit.
 api_depositLimit_obj api_depositLimit(string coin_pair)
 {
-	/// API Throttle
-	if (API_THROTTLE_ENABLED) api_throttle();
-
 	/// API call
 	string json_data_raw = http_get(URL_API_DEPOSIT_LIMIT + coin_pair);
 
@@ -94,9 +88,6 @@ api_depositLimit_obj api_depositLimit(string coin_pair)
 /// This gets the market info (pair, rate, limit, minimum limit, miner fee)
 vector<api_marketInfo_obj> api_marketInfo(string coin_pair)
 {
-	/// API Throttle
-	if (API_THROTTLE_ENABLED) api_throttle();
-
 	/// Calling this function without an argument (the empty string) will
 	/// return multiple coin-pairs and may take a significant time to process;
 	/// thus, a warning is provided.
@@ -183,9 +174,6 @@ vector<api_marketInfo_obj> api_marketInfo(string coin_pair)
 /// Get a list of the most recent transactions.
 vector<api_recentTransactions_obj> api_recentTransactions(uint8_t amount)
 {
-	/// API Throttle
-	if (API_THROTTLE_ENABLED) api_throttle();
-
 	/// Amount should be between 1 and 50 inclusive. In reality, the API
 	/// rounds the given amount to the nearest valid number (as of January 6,
 	/// 2017), but to maintain consistency in case this behavior changes, this
@@ -255,9 +243,6 @@ vector<api_recentTransactions_obj> api_recentTransactions(uint8_t amount)
 /// TODO: Test using live data (currently untested using live data)
 api_transactionStatus_obj api_transactionStatus(string address_in)
 {
-	/// API Throttle
-	if (API_THROTTLE_ENABLED) api_throttle();
-
 	/// API call
 	string json_data_raw =
 		http_get(URL_API_TRANSACTION_STATUS + address_in);
@@ -341,9 +326,6 @@ api_transactionStatus_obj api_transactionStatus(string address_in)
 /// sending it in as a param, to get a successful response.
 api_timeRemaining_obj api_timeRemaining(string deposit_address) /// TODO: TEST
 {
-	/// API Throttle
-	if (API_THROTTLE_ENABLED) api_throttle();
-
 	/// API call
 	string json_data_raw =
 		http_get(URL_API_TIME_REMAINING + deposit_address);
@@ -383,9 +365,6 @@ vector<api_listCoins_obj> api_listCoins()
 	/// accounting for each entry. The current data-model used to represent
 	/// API output (i.e. structs and vectors of structs) treats this format
 	/// similar to "array of objects".
-
-	/// API Throttle
-	if (API_THROTTLE_ENABLED) api_throttle();
 
 	/// API call
 	string json_data_raw = http_get(URL_API_LIST_COINS);

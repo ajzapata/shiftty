@@ -9,6 +9,9 @@ using namespace std;
 
 int test_rate(string coin_pair, bool verbose)
 {
+	/// API Throttle
+	if (API_THROTTLE_ENABLED) api_throttle();
+
 	api_rate_obj obj = api_rate(coin_pair);
 
 	/// Check for API errors
@@ -45,6 +48,9 @@ int test_rate(string coin_pair, bool verbose)
 
 int test_depositLimit(string coin_pair, bool verbose)
 {
+	/// API Throttle
+	if (API_THROTTLE_ENABLED) api_throttle();
+
     api_depositLimit_obj obj = api_depositLimit(coin_pair);
 
 	/// Check for API errors
@@ -80,6 +86,9 @@ int test_depositLimit(string coin_pair, bool verbose)
 
 int test_marketInfo(string coin_pair, bool verbose)
 {
+	/// API Throttle
+	if (API_THROTTLE_ENABLED) api_throttle();
+
 	/// Note that the API function returns a vector of objects
     vector<api_marketInfo_obj> obj = api_marketInfo(coin_pair);
 
@@ -130,6 +139,9 @@ int test_marketInfo(string coin_pair, bool verbose)
 
 int test_recentTransactions(uint8_t amount, bool verbose)
 {
+	/// API Throttle
+	if (API_THROTTLE_ENABLED) api_throttle();
+
 	/// Note that the API function returns a vector of objects
     vector<api_recentTransactions_obj> obj = api_recentTransactions(amount);
 
@@ -178,6 +190,9 @@ int test_recentTransactions(uint8_t amount, bool verbose)
 /// Testing incomplete: For best results, this test requires a live transaction
 int test_transactionStatus(string address_in, bool verbose)
 {
+	/// API Throttle
+	if (API_THROTTLE_ENABLED) api_throttle();
+
     api_transactionStatus_obj obj = api_transactionStatus(address_in);
 
 	/// Check for API errors
@@ -252,6 +267,9 @@ int test_transactionStatus(string address_in, bool verbose)
 /// Testing incomplete: For best results, this test requires a live transaction
 int test_timeRemaining(string deposit_address, bool verbose)
 {
+	/// API Throttle
+	if (API_THROTTLE_ENABLED) api_throttle();
+
     api_timeRemaining_obj obj = api_timeRemaining(deposit_address);
 
 	/// Check for API errors
@@ -286,6 +304,9 @@ int test_timeRemaining(string deposit_address, bool verbose)
 
 int test_listCoins(bool verbose)
 {
+	/// API Throttle
+	if (API_THROTTLE_ENABLED) api_throttle();
+
 	/// Note that the API function returns a vector of objects
     vector<api_listCoins_obj> obj = api_listCoins();
 

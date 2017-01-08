@@ -18,10 +18,6 @@ using std::vector;
 
 /* Constants */
 
-/// API call throttle (means of throttling defined in a function below)
-const bool API_THROTTLE_ENABLED = true;
-const uint64_t API_THROTTLE_TIME_MILLISECONDS = 1000; // 1 sec = 1000 msec
-
 /// URLS
 const string
 URL_API_RATE = "https://shapeshift.io/rate/",
@@ -203,13 +199,5 @@ api_createTransaction(string address_out, double amount, string coin_pair,
 api_cancelTransaction_obj api_cancelTransaction(string address_in);
 
 #endif // 0
-
-/* Other Functions */
-
-inline void api_throttle()
-{
-	std::this_thread::sleep_for(
-		std::chrono::milliseconds(API_THROTTLE_TIME_MILLISECONDS));
-}
 
 #endif // SHAPESHIFT_API_INCLUDED

@@ -7,6 +7,16 @@
 
 using std::string;
 
+/// API call throttle (means of throttling defined in a function below)
+const bool API_THROTTLE_ENABLED = true;
+const uint64_t API_THROTTLE_TIME_MILLISECONDS = 1000; // 1 sec = 1000 msec
+
+inline void api_throttle()
+{
+	std::this_thread::sleep_for(
+		std::chrono::milliseconds(API_THROTTLE_TIME_MILLISECONDS));
+}
+
 /// Test-case return values
 const int TEST_EXCEPT					= -2;
 const int TEST_ERR						= -1;
