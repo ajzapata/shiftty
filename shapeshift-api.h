@@ -41,7 +41,7 @@ struct api_rate_obj
 {
 	string coin_pair;				/// as "pair" in JSON
 	double rate;
-	string error = "";
+	string error;
 };
 
 struct api_depositLimit_obj
@@ -49,7 +49,7 @@ struct api_depositLimit_obj
 	string coin_pair;				/// "pair"
 	double limit_max;				/// "limit"
 	double limit_min;				/// "min"
-	string error = "";
+	string error;
 };
 
 struct api_marketInfo_obj
@@ -60,7 +60,7 @@ struct api_marketInfo_obj
 	double limit_qmax;				/// "limit"; applies only for "quick" tx's
 	double limit_max;				/// "maxLimit"
 	double minerfee;
-	string error = "";
+	string error;
 };
 
 struct api_recentTransactions_obj
@@ -69,7 +69,7 @@ struct api_recentTransactions_obj
 	string coin_out;
 	double amount;
 	double timestamp_sec;
-	string error = "";
+	string error;
 };
 
 struct api_transactionStatus_obj
@@ -82,14 +82,14 @@ struct api_transactionStatus_obj
 	string coin_out;
 	double amount_out;
 	string tx_id;
-	string error = "";
+	string error;
 };
 
 struct api_timeRemaining_obj
 {
 	string status;
 	int seconds_remaining;
-	string error = "";
+	string error;
 };
 
 struct api_listCoins_obj
@@ -98,7 +98,7 @@ struct api_listCoins_obj
 	string symbol;
 	string url_image;
 	string status;
-	string error = "";
+	string error;
 };
 
 struct api_listTransactions_private_obj
@@ -113,13 +113,13 @@ struct api_listTransactions_private_obj
 	double amount_out;
 	double rate;
 	string status;
-	string error = "";
+	string error;
 };
 
 struct api_validateAddress_obj
 {
 	bool isValid;
-	string error = "";
+	string error;
 };
 
 struct api_createTransaction_quick_obj
@@ -131,14 +131,14 @@ struct api_createTransaction_quick_obj
 	string nxt_public_key;
 	string xrp_destination_tag;
 	string api_public_key;
-	string error = "";
+	string error;
 };
 
 struct api_requestEmailReceipt_obj
 {
 	string status;
 	string message;
-	string error = "";
+	string error;
 };
 
 struct api_createTransaction_obj
@@ -152,13 +152,13 @@ struct api_createTransaction_obj
 	double rate_fixed;
 	double miner_fee;
 	string api_public_key;
-	string error = "";
+	string error;
 };
 
 struct api_cancelTransaction_obj
 {
-	string success = "";
-	string error = "";
+	string success;
+	string error;
 };
 
 /* Shapeshift API Function Declarations */
