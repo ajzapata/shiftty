@@ -12,6 +12,8 @@
 
 /// TODO:
 /// - Optimize code (e.g. to pass pointers rather than objects)
+/// - Encode ripple addresses (at the moment, they're not compatible since the
+///   URI encoding component hasn't been implemented yet.
 
 using namespace std;
 
