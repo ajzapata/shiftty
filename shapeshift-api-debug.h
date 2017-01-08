@@ -32,6 +32,8 @@ const string DEFAULT_COIN_PAIR = "btc_xmr";
 const uint8_t DEFAULT_AMOUNT = 5;
 const string DEFAULT_ADDRESS_IN = "NULL";
 const string DEFAULT_DEPOSIT_ADDRESS = "NULL";
+const string DEFAULT_API_KEY = "NULL";
+const string DEFAULT_ADDRESS_OUT = "NULL";
 
 /// Test cases: Check for expected output
 int test_rate(string coin_pair, bool verbose = false);
@@ -41,9 +43,10 @@ int test_recentTransactions(uint8_t amount = 5, bool verbose = false);
 int test_transactionStatus(string address_in, bool verbose = false);
 int test_timeRemaining(string deposit_address, bool verbose = false);
 int test_listCoins(bool verbose = false);
-#if 0
-int test_listTransactions_private(string api_key, string address_in = "",
+int test_listTransactions_private(string api_key, bool verbose = false);
+int test_listTransactions_private(string api_key, string address_out,
 	bool verbose = false);
+#if 0
 int test_validateAddress(string address, bool verbose = false);
 int test_createTransaction_quick(string address_out, string coin_pair,
 	string return_address = "", string api_public_key = "",

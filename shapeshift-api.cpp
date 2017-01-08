@@ -407,8 +407,6 @@ vector<api_listCoins_obj> api_listCoins()
 	return v_obj;
 }
 
-#if 0
-
 /// Get List of Transactions with a PRIVATE API KEY
 /// (api_listTransactions_private):
 /// Allows vendors to get a list of all transactions that have ever been done
@@ -416,12 +414,16 @@ vector<api_listCoins_obj> api_listCoins()
 /// PUBLIC KEY, but they are looked up using the linked PRIVATE KEY, to
 /// protect the privacy of our affiliates' account details.
 vector<api_listTransactions_private_obj>
-api_listTransactions_private(string api_key, string address_in)
+api_listTransactions_private(string api_key) /// TODO: TEST
 {
-
+	/// Call the overloaded function with the empty string as the argument for
+	/// address_out; the function uses the correct API call as part of the
+	/// error checks.
+	return api_listTransactions_private(api_key, string());
 }
 
-/// Get List of Transactions with a Specific Output Address (MISSING!)
+/// Get List of Transactions with a Specific Output Address
+/// (api_listTransactions_private, overloaded function):
 /// Allows vendors to get a list of all transactions that have ever been sent
 /// to one of their addresses. The affilliate's PRIVATE KEY must be provided,
 /// and will only return transactions that were sent to output address AND
@@ -430,6 +432,91 @@ api_listTransactions_private(string api_key, string address_in)
 /// "?dt=destTagNUM" appended on the end, you will need to use the
 /// URIEncodeComponent() function on the address before sending it in as a
 /// param, to get a successful response.
+vector<api_listTransactions_private_obj>
+api_listTransactions_private(string api_key, string address_out) /// TODO: TEST
+{
+	/// API call
+	/// If any string is the empty string, an HTTP redirect occurs (undefined)
+	string json_data_raw;
+	if (api_key.empty())
+		json_data_raw = "{\"error\":\"[SELF] Empty string\"}";
+	else if (address_out.empty()) /// Look up all transactions by key
+		json_data_raw =
+			http_get(URL_API_LIST_TRANSACTIONS_PRIVATE + api_key);
+	else /// Look up transactions by key and filter by outgoing a
+		json_data_raw =
+			http_get(URL_API_LIST_TRANSACTIONS_PRIVATE_ADDR + api_key + "/" +
+				address_out);
+
+	/// Interpret and extract JSON data
+	Json::Reader json_reader;
+	Json::Value json_data;
+	assert(json_reader.parse(json_data_raw, json_data));
+
+	vector<api_listTransactions_private_obj> v_obj;
+
+	api_listTransactions_private_obj obj;
+
+	/// Check for potential API error object. There's no reason to believe they
+	/// exist in this form, but it's better than finding out the hard way...
+	if (json_data.empty()) /// Empty set (invalid input or no tx found)
+	{
+		/// This check must be the first since searching for a nonexisting
+		/// member internally creates it and assigns it a null value (i.e from
+		/// then on, isMember() will return true for that item).
+		obj.error = "[SELF] Empty set";
+		v_obj.push_back(obj);
+		return v_obj;
+	}
+	else if (json_data.isObject() && !json_data["error"].asString().empty())
+	{
+		obj.error = json_data["error"].asString();
+		v_obj.push_back(obj);
+		return v_obj;
+	}
+	else if (json_data.isArray() &&
+		(!json_data[0]["error"].asString().empty() ||
+		json_data[0]["status"].asString() == "error")) /// TODO: See error fmt.
+	{
+		obj.status = json_data[0]["status"].asString();
+		obj.error = json_data[0]["error"].asString();
+		v_obj.push_back(obj);
+		return v_obj;
+	}
+
+	for (Json::Value::ArrayIndex i = 0; i < json_data.size(); i++)
+	{
+		/// Regardless of amount, the source JSON has the transaction objects
+		/// in an array ("array of objects" form).
+		/// TODO: Look at results from live tests to see if decimal quantities
+		/// are strings (in quotes) or doubles, in order to replace the
+		/// currently-used expressions
+
+		/// Fill API object fields
+		obj.tx_id_in = json_data[i]["inputTXID"].asString();
+		obj.address_in = json_data[i]["inputAddress"].asString();
+		obj.coin_in = json_data[i]["inputCurrency"].asString();
+		obj.amount_in = json_data[i]["inputAmount"].isString() ?
+			strtod(json_data[i]["inputAmount"].asCString(), NULL) :
+			json_data[i]["inputAmount"].asDouble();
+		obj.tx_id_out = json_data[i]["outputTXID"].asString();
+		obj.address_out = json_data[i]["outputAddress"].asString();
+		obj.coin_out = json_data[i]["outputCurrency"].asString();
+		obj.amount_out = json_data[i]["outputAmount"].isString() ?
+			strtod(json_data[i]["outputAmount"].asCString(), NULL) :
+			json_data[i]["outputAmount"].asDouble();
+		obj.rate = json_data[i]["shiftRate"].isString() ?
+			strtod(json_data[i]["shiftRate"].asCString(), NULL) :
+			json_data[i]["shiftRate"].asDouble();
+		obj.status = json_data[i]["status"].asString();
+
+		v_obj.push_back(obj);
+	}
+
+	return v_obj;
+}
+
+#if 0
 
 /// Validate an address, given a currency symbol and address.
 /// (api_validateAddress):

@@ -177,10 +177,13 @@ api_timeRemaining_obj api_timeRemaining(string deposit_address);
 
 vector<api_listCoins_obj> api_listCoins();
 
-#if 0
+vector<api_listTransactions_private_obj>
+api_listTransactions_private(string api_key);
 
 vector<api_listTransactions_private_obj>
-api_listTransactions_private(string api_key, string address_in = "");
+api_listTransactions_private(string api_key, string address_out);
+
+#if 0
 
 api_validateAddress_obj api_validateAddress(string address);
 

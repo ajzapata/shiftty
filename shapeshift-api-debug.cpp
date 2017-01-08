@@ -351,6 +351,78 @@ int test_listCoins(bool verbose)
 	return i_retval;
 }
 
+int test_listTransactions_private(string api_key, bool verbose)
+{
+	/// Call the overloaded function with the empty string as the argument for
+	/// address_out; the function uses the correct API call as part of the
+	/// error checks.
+	return test_listTransactions_private(api_key, string(), verbose);
+}
+
+int test_listTransactions_private(string api_key, string address_out,
+	bool verbose)
+{
+	/// API Throttle
+	if (API_THROTTLE_ENABLED) api_throttle();
+
+	/// Note that the API function returns a vector of objects
+    vector<api_listTransactions_private_obj> obj =
+		api_listTransactions_private(api_key, address_out);
+
+	/// Check for API errors; the error is reported in the first object
+	int i_retval = obj[0].error != "" ? TEST_API_ERR : TEST_OK;
+	string s_retval = obj[0].error != "" ? "TEST_API_ERR" : "TEST_OK";
+
+	/// Print API call output
+	if (verbose)
+	{
+		cerr << "##### TESTING api_listTransactions_private #####" << endl;
+		cerr << "Function arguments:" << endl;
+		cerr << "api_key = " << api_key << endl;
+		cerr << "address_out = " << address_out << endl;
+		cerr << "Function output:" << endl;
+		cerr << "retval = " << s_retval << endl;
+		if (obj[0].error != "" &&
+			(obj[0].status.empty() || obj[0].status == "error")) /// API error
+		{
+			cerr << "obj[0].tx_id_in = (UNDEFINED)" << endl;
+			cerr << "obj[0].address_in = (UNDEFINED)" << endl;
+			cerr << "obj[0].coin_in = (UNDEFINED)" << endl;
+			cerr << "obj[0].amount_in = (UNDEFINED)" << endl;
+			cerr << "obj[0].tx_id_out =  (UNDEFINED)" << endl;
+			cerr << "obj[0].address_out = (UNDEFINED)" << endl;
+			cerr << "obj[0].coin_out = (UNDEFINED)" << endl;
+			cerr << "obj[0].amount_out = (UNDEFINED)" << endl;
+			cerr << "obj[0].rate = (UNDEFINED)" << endl;
+			cerr << "obj[0].status = " << obj[0].status << endl;
+			cerr << "obj[0].error = " << obj[0].error << endl;
+		}
+		else
+		{
+			string objstr;
+
+			/// We iterate through all the transactions
+			for (size_t i = 0; i < obj.size(); i++)
+			{
+				objstr = "obj[" + to_string(i) + "]";
+				cerr << objstr + ".tx_id_in = " << obj[i].tx_id_in << endl;
+				cerr << objstr + ".address_in = " << obj[i].address_in << endl;
+				cerr << objstr + ".coin_in = " << obj[i].coin_in << endl;
+				cerr << objstr + ".amount_in = " << obj[i].amount_in << endl;
+				cerr << objstr + ".tx_id_out = " << obj[i].tx_id_out << endl;
+				cerr << objstr + ".address_out = " << obj[i].address_out << endl;
+				cerr << objstr + ".coin_out = " << obj[i].coin_out << endl;
+				cerr << objstr + ".amount_out = " << obj[i].amount_out << endl;
+				cerr << objstr + ".status = " << obj[i].status << endl;
+				cerr << objstr + ".error = " << obj[i].error << endl;
+			}
+		}
+		cerr << "##### END TESTING api_listTransactions_private #####" << endl;
+	}
+
+	return i_retval;
+}
+
 /// Test-case batches
 
 int test_all(bool verbose)
@@ -367,12 +439,18 @@ int test_all(bool verbose)
 	int retval_timeRemaining = test_timeRemaining(DEFAULT_DEPOSIT_ADDRESS,
 		verbose);
 	int retval_listCoins = test_listCoins(verbose);
+	int retval_listTransactions_private = test_listTransactions_private(
+		DEFAULT_API_KEY, verbose);
+	int retval_listTransactions_private_addr = test_listTransactions_private(
+		DEFAULT_API_KEY, DEFAULT_ADDRESS_OUT, verbose);
 
 	/// Negated values need "live" (better) data (to verify function rather
 	/// than only verifying proper error recognition).
 	bool pass = !(retval_rate || retval_depositLimit || retval_marketInfo ||
 		retval_recentTransactions || !(retval_transactionStatus) ||
-		!(retval_timeRemaining) || retval_listCoins);
+		!(retval_timeRemaining) || retval_listCoins ||
+		!(retval_listTransactions_private) ||
+		!(retval_listTransactions_private_addr));
 	string s_pass = pass ? "PASS" : "FAIL";
 
 	cerr << "RESULT: " << s_pass << endl;
@@ -389,6 +467,10 @@ int test_all(bool verbose)
 		<< endl;
 	cerr << "[" << retval_timeRemaining << "] test_timeRemaining*" << endl;
 	cerr << "[" << retval_listCoins << "] test_listCoins" << endl;
+	cerr << "[" << retval_listTransactions_private
+		<< "] test_listTransactions_private(api_key)*" << endl;
+	cerr << "[" << retval_listTransactions_private_addr
+		<< "] test_listTransactions_private(api_key, address_out)*" << endl;
 	cerr << "*Non-zero number indicates passed test." << endl;
 
 	cerr << "##### END BATCH TEST ALL #####" << endl;
