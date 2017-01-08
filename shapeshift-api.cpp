@@ -230,7 +230,7 @@ vector<api_recentTransactions_obj> api_recentTransactions(uint8_t amount)
 		/// Fill API object fields
 		obj.coin_in = json_data[i]["curIn"].asString();
 		obj.coin_out = json_data[i]["curOut"].asString();
-		obj.timestamp_sec = json_data[i]["timestamp"].asDouble();;
+		obj.timestamp_sec = json_data[i]["timestamp"].asDouble();
 		obj.amount = json_data[i]["amount"].asDouble();
 
 		v_obj.push_back(obj);
@@ -539,7 +539,7 @@ api_validateAddress_obj api_validateAddress(string address, string coin)
 
 	api_validateAddress_obj obj;
 
-	/// API Object
+	/// Fill API object fields
 	obj.isValid = json_data.isMember("isvalid") ?
 		json_data["isvalid"].asBool() : false;
 	obj.error = json_data["error"].isObject() ? /// In source JSON as: {}
