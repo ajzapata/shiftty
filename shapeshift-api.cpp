@@ -518,17 +518,38 @@ api_listTransactions_private(string api_key, string address_out) /// TODO: TEST
 	return v_obj;
 }
 
-#if 0
-
 /// Validate an address, given a currency symbol and address.
 /// (api_validateAddress):
 /// Allows user to verify that their receiving address is a valid address
 /// according to a given wallet daemon. If isvalid returns true, this address
 /// is valid according to the coin daemon indicated by the currency symbol.
-api_validateAddress_obj api_validateAddress(string address)
+api_validateAddress_obj api_validateAddress(string address, string coin)
 {
+	/// API call
+	/// If the address and/or coin symbol is the empty string, the API call
+	/// will fail (HTTP redirect)
+	string json_data_raw = address.empty() || coin.empty() ?
+		"{\"isvalid\":false,\"error\":\"[SELF] Empty string in arg\"}" :
+		http_get(URL_API_VALIDATE_ADDRESS + address + "/" + coin);
 
+	/// Interpret and extract JSON data
+	Json::Reader json_reader;
+	Json::Value json_data;
+	assert(json_reader.parse(json_data_raw, json_data));
+
+	api_validateAddress_obj obj;
+
+	/// API Object
+	obj.isValid = json_data.isMember("isvalid") ?
+		json_data["isvalid"].asBool() : false;
+	obj.error = json_data["error"].isObject() ? /// In source JSON as: {}
+		"[SELF] Invalid address and/or coin symbol" :
+		json_data["error"].asString();
+
+	return obj;
 }
+
+#if 0
 
 /// Normal Transaction (api_createTransaction_quick): *(not sure if quick?)
 /// This is the primary data input into ShapeShift.

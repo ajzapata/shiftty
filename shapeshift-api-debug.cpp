@@ -423,6 +423,34 @@ int test_listTransactions_private(string api_key, string address_out,
 	return i_retval;
 }
 
+int test_validateAddress(string address, string coin, bool verbose)
+{
+	/// API Throttle
+	if (API_THROTTLE_ENABLED) api_throttle();
+
+    api_validateAddress_obj obj = api_validateAddress(address, coin);
+
+	/// Check for API errors
+	int i_retval = obj.error != "" ? TEST_API_ERR : TEST_OK;
+	string s_retval = obj.error != "" ? "TEST_API_ERR" : "TEST_OK";
+
+	/// Print API call output
+	if (verbose)
+	{
+		cerr << "##### TESTING api_validateAddress #####" << endl;
+		cerr << "Function arguments:" << endl;
+		cerr << "address = " << address << endl;
+		cerr << "coin = " << coin << endl;
+		cerr << "Function output:" << endl;
+		cerr << "retval = " << s_retval << endl;
+		cerr << "obj.isValid = " << obj.isValid << endl; // always defined
+		cerr << "obj.error = " << obj.error << endl;
+		cerr << "##### END TESTING validateAddress #####" << endl;
+	}
+
+	return i_retval;
+}
+
 /// Test-case batches
 
 int test_all(bool verbose)
@@ -443,6 +471,8 @@ int test_all(bool verbose)
 		DEFAULT_API_KEY, verbose);
 	int retval_listTransactions_private_addr = test_listTransactions_private(
 		DEFAULT_API_KEY, DEFAULT_ADDRESS_OUT, verbose);
+	int retval_validateAddress = test_validateAddress(
+		DEFAULT_ADDRESS, DEFAULT_COIN, verbose);
 
 	/// Negated values need "live" (better) data (to verify function rather
 	/// than only verifying proper error recognition).
@@ -450,7 +480,7 @@ int test_all(bool verbose)
 		retval_recentTransactions || !(retval_transactionStatus) ||
 		!(retval_timeRemaining) || retval_listCoins ||
 		!(retval_listTransactions_private) ||
-		!(retval_listTransactions_private_addr));
+		!(retval_listTransactions_private_addr) || !(retval_validateAddress));
 	string s_pass = pass ? "PASS" : "FAIL";
 
 	cerr << "RESULT: " << s_pass << endl;
@@ -471,6 +501,7 @@ int test_all(bool verbose)
 		<< "] test_listTransactions_private(api_key)*" << endl;
 	cerr << "[" << retval_listTransactions_private_addr
 		<< "] test_listTransactions_private(api_key, address_out)*" << endl;
+	cerr << "[" << retval_validateAddress << "] test_validateAddress*" << endl;
 	cerr << "*Non-zero number indicates passed test." << endl;
 
 	cerr << "##### END BATCH TEST ALL #####" << endl;
