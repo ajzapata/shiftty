@@ -15,6 +15,10 @@ obj/
 *.depend
 *.layout
 
+# Visual Studio 2015
+*.sln
+*.vcxproj
+
 ###############################################################################
 # Copy-paste from https://gist.github.com/octocat/9257657
 
