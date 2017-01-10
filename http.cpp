@@ -13,13 +13,12 @@
 
 /* OS-specific Libraries */
 
-#ifndef WIN32
+#ifdef __linux__
 #include <unistd.h>
+#include <curl/curl.h> /// pkg "libcurl-devel" (Fedora Linux 24)
+#else /// Microsoft Windows (x64)
+#include <Windows.h>
 #endif
-
-/* CURL Libraries (from package "libcurl-devel") */
-
-#include <curl/curl.h>
 
 /* Project Libraries */
 

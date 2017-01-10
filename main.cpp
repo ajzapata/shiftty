@@ -13,24 +13,23 @@ using its API.
 #include <cassert>
 #include <vector>
 #include "logger.h"
-#include "shapeshift-api.h"
-#include "shapeshift-api-debug.h"
+//#include "shapeshift-api.h"
+//#include "shapeshift-api-debug.h"
 
 /* OS-specific Libraries */
 
-#ifndef WIN32
+#ifdef __linux__
 #include <unistd.h>
+#include <curl/curl.h> /// pkg "libcurl-devel" (Fedora Linux 24)
+#else /// Microsoft Windows (x64)
+#include <Windows.h>
 #endif
-
-/* CURL Libraries (from package "libcurl-devel" (Fedora Linux 24) */
-
-#include <curl/curl.h>
 
 using namespace std;
 
 int main(int argc, const char* argv[])
 {
-	test_all(true);
+	slog("Hello world!", MessageType::info);
 
 	int breakpointHere = 0;
 
