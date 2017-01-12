@@ -89,12 +89,12 @@ std::string http_get(std::string url)
 
 	/// Only log HTTP code if not zero
 	//if (http_code != 0)
-	//	log("HTTP GET " + url + "; RETURN CODE " + to_string((int)http_code));
+	//	slog("HTTP GET " + url + "; RETURN CODE " + to_string((int)http_code));
 	/// (^ non-functional; http_code never becomes defined)
 
 	/// Check for errors with the request
 	if (curl_retcode != CURLE_OK) {
-		log("http.cpp::http_get HTTP Request failed. " +
+		slog("http.cpp::http_get HTTP Request failed. " +
 			string(curl_easy_strerror(curl_retcode)), MessageType::error);
 		return "";
 	}
@@ -184,11 +184,11 @@ std::string http_post(std::string url, std::string post_data)
 
 	/// Only log HTTP code if not zero
 	//if (http_code != 0)
-	//	log("HTTP GET " + url + "; RETURN CODE " + to_string((int)http_code));
+	//	slog("HTTP GET " + url + "; RETURN CODE " + to_string((int)http_code));
 
 	/// Check for errors with the request
 	if (curl_retcode != CURLE_OK) {
-		log("http.cpp::http_get HTTP Request failed. " +
+		slog("http.cpp::http_get HTTP Request failed. " +
 			string(curl_easy_strerror(curl_retcode)), MessageType::error);
 		return "";
 	}

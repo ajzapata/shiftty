@@ -93,7 +93,7 @@ vector<api_marketInfo_obj> api_marketInfo(string coin_pair)
 	/// Calling this function without an argument (the empty string) will
 	/// return multiple coin-pairs and may take a significant time to process;
 	/// thus, a warning is provided.
-	if (coin_pair == "") log(
+	if (coin_pair == "") slog(
 		"api_marketInfo called with empty string; this may take a while...",
 		MessageType::warning);
 
@@ -184,12 +184,12 @@ vector<api_recentTransactions_obj> api_recentTransactions(uint8_t amount)
 	/// non-numeric input is replaced by the default amount of 5 (not possible
 	/// to input in this function and thus not handled).
 	if (amount < 1) {
-		log("api_recentTransactions: amount < 1. Defaulting to amount = 5",
+		slog("api_recentTransactions: amount < 1. Defaulting to amount = 5",
 			MessageType::warning);
 		amount = 5;
 	}
 	else if (amount > 50) {
-		log("api_recentTransactions: amount > 50. Defaulting to amount = 50",
+		slog("api_recentTransactions: amount > 50. Defaulting to amount = 50",
 			MessageType::warning);
 		amount = 50;
 	}
