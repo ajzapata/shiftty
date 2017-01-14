@@ -36,7 +36,7 @@ api_rate_obj api_rate(string coin_pair)
 	/// Interpret and extract JSON data
 	Json::Reader json_reader;
 	Json::Value json_data;
-	assert(json_reader.parse(json_data_raw, json_data));
+	json_reader.parse(json_data_raw, json_data);
 
 	/// Create API object
 	api_rate_obj obj;
@@ -71,7 +71,7 @@ api_depositLimit_obj api_depositLimit(string coin_pair)
 	/// Interpret and extract JSON data
 	Json::Reader json_reader;
 	Json::Value json_data;
-	assert(json_reader.parse(json_data_raw, json_data));
+	json_reader.parse(json_data_raw, json_data);
 
 	/// Create API object
 	api_depositLimit_obj obj;
@@ -104,7 +104,7 @@ vector<api_marketInfo_obj> api_marketInfo(string coin_pair)
 	/// Interpret and extract JSON data
 	Json::Reader json_reader;
 	Json::Value json_data;
-	assert(json_reader.parse(json_data_raw, json_data));
+	json_reader.parse(json_data_raw, json_data);
 
     /// Unlike other API calls, the JSON object returned can have multiple
     /// coin-pairs if coin_pair string is not given. So we treat everything as
@@ -201,7 +201,7 @@ vector<api_recentTransactions_obj> api_recentTransactions(uint8_t amount)
 	/// Interpret and extract JSON data
 	Json::Reader json_reader;
 	Json::Value json_data;
-	assert(json_reader.parse(json_data_raw, json_data));
+	json_reader.parse(json_data_raw, json_data);
 
 	vector<api_recentTransactions_obj> v_obj;
 
@@ -252,7 +252,7 @@ api_transactionStatus_obj api_transactionStatus(string address_in)
 	/// Interpret and extract JSON data
 	Json::Reader json_reader;
 	Json::Value json_data;
-	assert(json_reader.parse(json_data_raw, json_data));
+	json_reader.parse(json_data_raw, json_data);
 
 	api_transactionStatus_obj obj;
 
@@ -335,7 +335,7 @@ api_timeRemaining_obj api_timeRemaining(string deposit_address) /// TODO: TEST
 	/// Interpret and extract JSON data
 	Json::Reader json_reader;
 	Json::Value json_data;
-	assert(json_reader.parse(json_data_raw, json_data));
+	json_reader.parse(json_data_raw, json_data);
 
 	api_timeRemaining_obj obj;
 
@@ -374,7 +374,7 @@ vector<api_listCoins_obj> api_listCoins()
 	/// Interpret and extract JSON data
 	Json::Reader json_reader;
 	Json::Value json_data;
-	assert(json_reader.parse(json_data_raw, json_data));
+	json_reader.parse(json_data_raw, json_data);
 
 	vector<api_listCoins_obj> v_obj;
 
@@ -453,7 +453,7 @@ api_listTransactions_private(string api_key, string address_out) /// TODO: TEST
 	/// Interpret and extract JSON data
 	Json::Reader json_reader;
 	Json::Value json_data;
-	assert(json_reader.parse(json_data_raw, json_data));
+	json_reader.parse(json_data_raw, json_data);
 
 	vector<api_listTransactions_private_obj> v_obj;
 
@@ -535,7 +535,7 @@ api_validateAddress_obj api_validateAddress(string address, string coin)
 	/// Interpret and extract JSON data
 	Json::Reader json_reader;
 	Json::Value json_data;
-	assert(json_reader.parse(json_data_raw, json_data));
+	json_reader.parse(json_data_raw, json_data);
 
 	api_validateAddress_obj obj;
 
