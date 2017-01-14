@@ -11,7 +11,7 @@
 #include <curl/curl.h> /// pkg "libcurl-devel" (Fedora Linux 24)
 #include "logger.h"
 
-#ifdef __linux__
+#if !defined _WIN32 && !defined _WIN64
 #include <unistd.h>
 #else
 /// Microsoft Windows (x64)
@@ -25,7 +25,7 @@
 #else
 #pragma comment(lib, "libcurl.lib")
 #endif // _DEBUG
-#endif // __linux__
+#endif // !defined _WIN32 && !defined _WIN64
 
 using namespace std;
 

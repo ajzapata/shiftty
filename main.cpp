@@ -20,9 +20,9 @@ using its API.
 #include "json/json-forwards.h"
 #include "http.h"
 
-#ifdef __linux__
+#if !defined _WIN32 && !defined _WIN64
 #include <unistd.h>
-#endif // __linux__
+#endif // !defined _WIN32 && !defined _WIN64
 
 using namespace std;
 
