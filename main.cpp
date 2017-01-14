@@ -12,19 +12,17 @@ using its API.
 #include <string>
 #include <cassert>
 #include <vector>
+#include <curl/curl.h> /// pkg "libcurl-devel" (Fedora Linux 24)
 #include "logger.h"
 #include "shapeshift-api.h"
 #include "shapeshift-api-debug.h"
+#include "json/json.h"
+#include "json/json-forwards.h"
+#include "http.h"
 
-/* OS-specific Libraries */
-
-#ifndef WIN32
+#if !defined _WIN32 && !defined _WIN64
 #include <unistd.h>
-#endif
-
-/* CURL Libraries (from package "libcurl-devel" (Fedora Linux 24) */
-
-#include <curl/curl.h>
+#endif // !defined _WIN32 && !defined _WIN64
 
 using namespace std;
 

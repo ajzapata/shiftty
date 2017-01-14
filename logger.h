@@ -5,7 +5,6 @@
 
 #include <iostream>
 #include <cstdlib>
-#include <unistd.h>
 #include <string>
 
 using std::string;
@@ -22,6 +21,6 @@ enum MessageType{ info, warning, error };
 void init_log();
 
 /// log: Write string to main log.
-void log(string text, MessageType t = MessageType::info);
+void slog(string text, MessageType t = MessageType::info);
 
 #endif // LOGGER_INCLUDED

@@ -11,8 +11,8 @@ void init_log()
     /// Nothing to do here yet
 }
 
-/// log: Write string to main log.
-void log(string text, MessageType t)
+/// slog: Write string to main log.
+void slog(string text, MessageType t)
 {
     string prefix;
     switch (t)
