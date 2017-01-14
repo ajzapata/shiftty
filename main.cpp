@@ -42,7 +42,7 @@ int main(int argc, const char* argv[])
 	//cout << json_data["lorem"].asString() << endl;
 
 	string url = "www.example.com";//"https://shapeshift.io/rate/xmr_btc";
-	cout << http_get(url) << endl;
+	http_get(url);
 
 	int breakpointHere = 0;
 

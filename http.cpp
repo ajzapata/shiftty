@@ -20,7 +20,6 @@
 #include <winsock2.h>
 #include <windows.h>
 #include <WS2tcpip.h>
-#include <locale>
 #include <sstream>
 #pragma comment(lib, "ws2_32.lib")
 #endif
@@ -30,9 +29,9 @@
 
 using namespace std;
 
+#ifdef __linux__
 std::string http_get(std::string url)
 {
-#ifdef __linux__
 	/// CURL objects
 	CURL* http_req;
 	CURLcode curl_retcode;
@@ -118,21 +117,18 @@ std::string http_get(std::string url)
 	curl_global_cleanup();
 
 	return http_response_str;
+}
 #else /// Windows
+std::string http_get(std::string url)
+{
 	/// Snippet mostly from http://stackoverflow.com/q/1011339
 	WSADATA wsa_data;
 	SOCKET sock;
 	SOCKADDR_IN sai;
-	//struct hostent* host;
-	locale local;
+	string http_request;
+	string http_response;
 
-	int i = 0;
-	int line_count = 0;
-	int row_count = 0;
-	int data_length;
-	string website_html;
-	char buffer[10000];
-	string get_http =
+	http_request =
 		"GET /index.html HTTP/1.1\r\nHost: " + url + "\r\nConnection: close\r\n\r\n";
 
 	/// WSA Failure
@@ -142,64 +138,63 @@ std::string http_get(std::string url)
 		exit(1); // fatal
 	}
 
-	// tmp
-	//in_addr iaddr;
-	//iaddr.S_un.S_un_b.s_b1 = 93;// 104;
-	//iaddr.S_un.S_un_b.s_b2 = 184;//25;
-	//iaddr.S_un.S_un_b.s_b3 = 216;// 50; // 51
-	//iaddr.S_un.S_un_b.s_b4 = 34;// 33;
-
 	sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-	//host = gethostbyname(url.c_str());
 
 	// tmp
-	ADDRINFO* ll_ai;
-	int retval_ai = getaddrinfo(url.c_str(), "HTTP", NULL, &ll_ai);
+	ADDRINFO* ll_addrinfo;
+	int retval_ai = getaddrinfo(url.c_str(), "HTTP", NULL, &ll_addrinfo);
 	if (retval_ai) /// Error
 	{
 		cerr << "ERR: getaddrinfo returned " << retval_ai << endl;
 		exit(4);
 	}
 
-	//sa.sin_addr.s_addr = iaddr.S_un.S_addr; // *((unsigned long*)host->h_addr);
-	if (ll_ai != NULL && ll_ai->ai_addr->sa_family == AF_INET)
+	/// Socket stuff (IPv4/IPv6)
+	while (ll_addrinfo != NULL)
 	{
-		sai = *(SOCKADDR_IN*)ll_ai->ai_addr;
+		if (ll_addrinfo->ai_addr->sa_family == AF_INET) {
+			//sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+			sai = *(SOCKADDR_IN*)ll_addrinfo->ai_addr;
+			break;
+		}
+		else if (ll_addrinfo->ai_addr->sa_family == AF_INET6) {
+			//sai = *(SOCKADDR_IN*)ll_addrinfo->ai_addr;
+			//break;
+		}
+		ll_addrinfo = ll_addrinfo->ai_next;
 	}
-	else if (ll_ai != NULL && ll_ai->ai_next != NULL)
-	{
-		sai = *(SOCKADDR_IN*)ll_ai->ai_next->ai_addr;
-	}
-	else exit(5);
-	//sai.sin_port = htons(80);
-	//sai.sin_family = AF_INET;
 
+	/// Establish connection
 	if (connect(sock, (SOCKADDR*)(&sai), sizeof(sai)) != 0)
 	{
 		cerr << "Could not connect" << endl;
 		exit(2); // fatal
 	}
 
-	send(sock, get_http.c_str(), strlen(get_http.c_str()), 0);
+	/// Execute HTTP GET
+	send(sock, http_request.c_str(), (int)strlen(http_request.c_str()), 0);
 
-	while ((data_length = recv(sock, buffer, 10000, 0)) > 0)
+	/// Read HTML data received
+	int data_length;
+	char buffer[1024];
+	while ((data_length = recv(sock, buffer, 1024, 0)) > 0)
 	{
 		int i = 0;
-		while (buffer[i] >= 32 || buffer[i] == '\n' || buffer[i] == '\r')
-			website_html += buffer[i++];
+		while ((buffer[i] >= 32 || buffer[i] == '\n' || buffer[i] == '\r') && i < data_length)
+			http_response += buffer[i++];
 	}
 
+	/// Clean-up
 	closesocket(sock);
 	WSACleanup();
 
-	cout << "##### HTTP GET REQUEST OUT #####" << endl;
-	cout << get_http << endl;
-	cout << "##### HTTP GET RESPONSE IN #####" << endl;
-	cout << website_html << endl;
-	return website_html;
-#endif
+	cerr << "##### HTTP GET REQUEST OUT #####" << endl;
+	cerr << http_request << endl;
+	cerr << "##### HTTP GET RESPONSE IN #####" << endl;
+	cerr << http_response << endl;
+	return http_response;
 }
-
+#endif
 
 std::string http_post(std::string url, std::string post_data)
 {
