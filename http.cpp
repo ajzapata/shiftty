@@ -17,9 +17,13 @@
 #include <unistd.h>
 #include <curl/curl.h> /// pkg "libcurl-devel" (Fedora Linux 24)
 #else /// Microsoft Windows (x64)
-#include <Windows.h>
+#include <winsock2.h>
+#include <windows.h>
+#include <WS2tcpip.h>
+#include <locale>
+#include <sstream>
+#pragma comment(lib, "ws2_32.lib")
 #endif
-
 /* Project Libraries */
 
 #include "logger.h"
@@ -28,14 +32,11 @@ using namespace std;
 
 std::string http_get(std::string url)
 {
+#ifdef __linux__
 	/// CURL objects
 	CURL* http_req;
 	CURLcode curl_retcode;
 	//double http_code;
-
-	#ifdef WIN32
-	curl_global_init(CURL_GLOBAL_ALL); // Initializes winsock stuff
-	#endif
 
 	/// Initialize CURL object
 	http_req = curl_easy_init();
@@ -117,19 +118,96 @@ std::string http_get(std::string url)
 	curl_global_cleanup();
 
 	return http_response_str;
+#else /// Windows
+	/// Snippet mostly from http://stackoverflow.com/q/1011339
+	WSADATA wsa_data;
+	SOCKET sock;
+	SOCKADDR_IN sai;
+	//struct hostent* host;
+	locale local;
+
+	int i = 0;
+	int line_count = 0;
+	int row_count = 0;
+	int data_length;
+	string website_html;
+	char buffer[10000];
+	string get_http =
+		"GET /index.html HTTP/1.1\r\nHost: " + url + "\r\nConnection: close\r\n\r\n";
+
+	/// WSA Failure
+	if (WSAStartup(MAKEWORD(2, 2), &wsa_data) != 0)
+	{
+		cerr << "WSAStartup failed" << endl;
+		exit(1); // fatal
+	}
+
+	// tmp
+	//in_addr iaddr;
+	//iaddr.S_un.S_un_b.s_b1 = 93;// 104;
+	//iaddr.S_un.S_un_b.s_b2 = 184;//25;
+	//iaddr.S_un.S_un_b.s_b3 = 216;// 50; // 51
+	//iaddr.S_un.S_un_b.s_b4 = 34;// 33;
+
+	sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	//host = gethostbyname(url.c_str());
+
+	// tmp
+	ADDRINFO* ll_ai;
+	int retval_ai = getaddrinfo(url.c_str(), "HTTP", NULL, &ll_ai);
+	if (retval_ai) /// Error
+	{
+		cerr << "ERR: getaddrinfo returned " << retval_ai << endl;
+		exit(4);
+	}
+
+	//sa.sin_addr.s_addr = iaddr.S_un.S_addr; // *((unsigned long*)host->h_addr);
+	if (ll_ai != NULL && ll_ai->ai_addr->sa_family == AF_INET)
+	{
+		sai = *(SOCKADDR_IN*)ll_ai->ai_addr;
+	}
+	else if (ll_ai != NULL && ll_ai->ai_next != NULL)
+	{
+		sai = *(SOCKADDR_IN*)ll_ai->ai_next->ai_addr;
+	}
+	else exit(5);
+	//sai.sin_port = htons(80);
+	//sai.sin_family = AF_INET;
+
+	if (connect(sock, (SOCKADDR*)(&sai), sizeof(sai)) != 0)
+	{
+		cerr << "Could not connect" << endl;
+		exit(2); // fatal
+	}
+
+	send(sock, get_http.c_str(), strlen(get_http.c_str()), 0);
+
+	while ((data_length = recv(sock, buffer, 10000, 0)) > 0)
+	{
+		int i = 0;
+		while (buffer[i] >= 32 || buffer[i] == '\n' || buffer[i] == '\r')
+			website_html += buffer[i++];
+	}
+
+	closesocket(sock);
+	WSACleanup();
+
+	cout << "##### HTTP GET REQUEST OUT #####" << endl;
+	cout << get_http << endl;
+	cout << "##### HTTP GET RESPONSE IN #####" << endl;
+	cout << website_html << endl;
+	return website_html;
+#endif
 }
 
 
 std::string http_post(std::string url, std::string post_data)
 {
+#ifdef __linux__
 	/// CURL objects
 	CURL* http_req;
 	CURLcode curl_retcode;
 	//double http_code;
-
-	#ifdef WIN32
-	curl_global_init(CURL_GLOBAL_ALL); // Initializes winsock stuff
-	#endif
 
 	/// Initialize CURL object
 	http_req = curl_easy_init();
@@ -209,4 +287,7 @@ std::string http_post(std::string url, std::string post_data)
 	curl_global_cleanup();
 
 	return http_response_str;
+#else // Windows
+	return "";
+#endif
 }
