@@ -445,7 +445,7 @@ int test_validateAddress(string address, string coin, bool verbose)
 		cerr << "retval = " << s_retval << endl;
 		cerr << "obj.isValid = " << obj.isValid << endl; // always defined
 		cerr << "obj.error = " << obj.error << endl;
-		cerr << "##### END TESTING validateAddress #####" << endl;
+		cerr << "##### END TESTING api_validateAddress #####" << endl;
 	}
 
 	return i_retval;
@@ -489,7 +489,7 @@ int test_createTransaction_quick(string address_out, string coin_pair,
 			<< endl;
 		cerr << "obj.api_public_key = " << obj.api_public_key << endl;
 		cerr << "obj.error = " << obj.error << endl;
-		cerr << "##### END TESTING createTransaction_quick #####" << endl;
+		cerr << "##### END TESTING api_createTransaction_quick #####" << endl;
 	}
 
 	return i_retval;
@@ -521,7 +521,7 @@ int test_requestEmailReceipt(string email_address, string tx_id, bool verbose)
 		cerr << "obj.status = " << obj.status << endl;
 		cerr << "obj.message = " << obj.message << endl;
 		cerr << "obj.error = " << obj.error << endl;
-		cerr << "##### END TESTING requestEmailReceipt #####" << endl;
+		cerr << "##### END TESTING api_requestEmailReceipt #####" << endl;
 	}
 
 	return i_retval;
