@@ -617,8 +617,7 @@ api_requestEmailReceipt(string email_address, string tx_id)
 
 	/// API call
 	string json_data_raw =
-		"{\"email\":{\"status\":\"success\",\"message\":\"Email receipt sent\"}}"; /// TEST
-		//http_post(URL_API_REQUEST_EMAIL_RECEIPT, post_data);
+		http_post(URL_API_REQUEST_EMAIL_RECEIPT, post_data);
 
 	/// Interpret and extract JSON data
 	Json::Reader json_reader;
