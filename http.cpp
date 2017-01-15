@@ -152,6 +152,25 @@ std::string http_post(std::string url, std::string post_data)
 		return "";
 	}
 
+	/// URL-encode HTTP POST data
+	//char* post_data_urlenc =
+	//	curl_easy_escape(http_request, post_data.c_str(),
+	//	strlen(post_data.c_str()));
+
+	/// If post_data is enclosed with brackets, assume that it is JSON data.
+	/// This is required since the ShapeShift API won't correctly parse the
+	/// post data if the data isn't declared as type "application/json"
+	bool isJSON = !post_data.empty() &&
+		post_data.at(0) == '{' && post_data.at(post_data.length() - 1) == '}';
+	if (isJSON)
+	{
+		/// Make a custom HTTP header with the appropriate information
+		curl_slist*header = NULL;
+		header = curl_slist_append(header, "Accept: application/json");
+		header = curl_slist_append(header, "Content-Type: application/json");
+		curl_easy_setopt(http_request, CURLOPT_HTTPHEADER, header);
+	}
+
 	/// Load URL to CURL object
 	curl_easy_setopt(http_request, CURLOPT_URL, url.c_str());
 	curl_easy_setopt(http_request, CURLOPT_WRITEFUNCTION, write_callback_str);
