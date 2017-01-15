@@ -49,10 +49,10 @@ int test_listTransactions_private(string api_key, bool verbose = false);
 int test_listTransactions_private(string api_key, string address_out,
 	bool verbose = false);
 int test_validateAddress(string address, string coin, bool verbose = false);
-#if 0
 int test_createTransaction_quick(string address_out, string coin_pair,
 	string return_address = "", string api_public_key = "",
 	bool verbose = false);
+#if 0
 int test_requestEmailReceipt(string email_address, string tx_id,
 	bool verbose = false);
 int test_createTransaction(string address_out, double amount, string coin_pair,

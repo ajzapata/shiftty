@@ -124,6 +124,7 @@ struct api_validateAddress_obj
 
 struct api_createTransaction_quick_obj
 {
+	string order_id;
 	string address_in;
 	string coin_in;
 	string address_out;
@@ -185,11 +186,11 @@ api_listTransactions_private(string api_key, string address_out);
 
 api_validateAddress_obj api_validateAddress(string address, string coin);
 
-#if 0
-
 api_createTransaction_quick_obj
 api_createTransaction_quick(string address_out, string coin_pair,
 	string return_address = "", string api_public_key = "");
+
+#if 0
 
 api_requestEmailReceipt_obj
 api_requestEmailReceipt(string email_address, string tx_id);

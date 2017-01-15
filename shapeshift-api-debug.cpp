@@ -451,6 +451,50 @@ int test_validateAddress(string address, string coin, bool verbose)
 	return i_retval;
 }
 
+/// Not currently implemented in batch-testing
+int test_createTransaction_quick(string address_out, string coin_pair,
+	string return_address, string api_public_key, bool verbose)
+{
+	/// API Throttle
+	if (API_THROTTLE_ENABLED) api_throttle();
+
+    api_createTransaction_quick_obj obj =
+		api_createTransaction_quick(address_out, coin_pair, return_address,
+			api_public_key);
+
+	/// Check for API errors
+	int i_retval = obj.error != "" ? TEST_API_ERR : TEST_OK;
+	string s_retval = obj.error != "" ? "TEST_API_ERR" : "TEST_OK";
+
+	/// Print API call output
+	if (verbose)
+	{
+		cerr << "##### TESTING api_createTransaction_quick #####" << endl;
+		cerr << "Function arguments:" << endl;
+		cerr << "address_out = " << address_out << endl;
+		cerr << "coin_pair = " << coin_pair << endl;
+		cerr << "return_address = " << return_address << endl;
+		cerr << "xrp_destination_tag = " << "(NOT IMPLEMENTED)" << endl;
+		cerr << "nxt_rs_address = " << "(NOT IMPLEMENTED)" << endl;
+		cerr << "api_public_key = " << api_public_key << endl;
+		cerr << "Function output:" << endl;
+		cerr << "retval = " << s_retval << endl;
+		cerr << "obj.order_id = " << obj.order_id << endl;
+		cerr << "obj.address_in = " << obj.address_in << endl;
+		cerr << "obj.coin_in = " << obj.coin_in << endl;
+		cerr << "obj.address_out = " << obj.address_out << endl;
+		cerr << "obj.coin_out = " << obj.coin_out << endl;
+		cerr << "obj.nxt_public_key = " << obj.nxt_public_key << endl;
+		cerr << "obj.xrp_destination_tag = " << obj.xrp_destination_tag
+			<< endl;
+		cerr << "obj.api_public_key = " << obj.api_public_key << endl;
+		cerr << "obj.error = " << obj.error << endl;
+		cerr << "##### END TESTING createTransaction_quick #####" << endl;
+	}
+
+	return i_retval;
+}
+
 /// Test-case batches
 
 int test_all(bool verbose)

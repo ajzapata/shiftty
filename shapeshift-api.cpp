@@ -549,16 +549,61 @@ api_validateAddress_obj api_validateAddress(string address, string coin)
 	return obj;
 }
 
-#if 0
-
-/// Normal Transaction (api_createTransaction_quick): *(not sure if quick?)
+/// Normal Transaction (api_createTransaction_quick):
 /// This is the primary data input into ShapeShift.
 api_createTransaction_quick_obj
 api_createTransaction_quick(string address_out, string coin_pair,
 	string return_address, string api_public_key)
 {
+	/// The first of the API calls that uses HTTP POST rather than HTTP GET.
+	/// This requires submitting data along with the HTTP request, then
+	/// interpreting the response. The data being submitted is in JSON format.
 
+	Json::Value json_post_data;
+	json_post_data["withdrawal"] = address_out;
+	json_post_data["pair"] = coin_pair;
+	if (!return_address.empty())
+		json_post_data["returnAddress"] = return_address;
+	if (!api_public_key.empty())
+		json_post_data["apiKey"] = api_public_key;
+
+	/// Remove spaces, carriage-returns, and new-lines from styled JSON string
+	string json_post_data_str = json_post_data.toStyledString();
+	string post_data;
+	char c;
+	for (size_t i = 0; i < json_post_data_str.length(); i++)
+	{
+        c = json_post_data_str[i];
+        if (c != ' ' && c != '\n' && c != '\r')
+			post_data += c;
+	}
+
+	/// API call
+	string json_data_raw =
+		http_post(URL_API_CREATE_TRANSACTION_QUICK,	post_data);
+
+	/// Interpret and extract JSON data
+	Json::Reader json_reader;
+	Json::Value json_data;
+	json_reader.parse(json_data_raw, json_data);
+
+	api_createTransaction_quick_obj obj;
+
+	/// Fill API object fields
+	obj.order_id = json_data["orderId"].asString();
+	obj.address_in = json_data["deposit"].asString();
+	obj.coin_in = json_data["depositType"].asString();
+	obj.address_out = json_data["withdrawal"].asString();
+	obj.coin_out = json_data["withdrawalType"].asString();
+	obj.nxt_public_key = json_data["public"].asString();
+	obj.xrp_destination_tag = json_data["xrpDestTag"].asString();
+	obj.api_public_key = json_data["apiPubKey"].asString();
+	obj.error = json_data["error"].asString();
+
+	return obj;
 }
+
+#if 0
 
 /// Request Email Receipt (api_requestEmailReceipt):
 /// This call requests a receipt for a transaction. The email address will be
