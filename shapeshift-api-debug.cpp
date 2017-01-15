@@ -529,10 +529,98 @@ int test_requestEmailReceipt(string email_address, string tx_id, bool verbose)
 
 /// Not currently implemented in batch-testing
 int test_createTransaction(string address_out, double amount, string coin_pair,
-	bool getQuoteOnly, string return_address, string api_public_key,
-	bool verbose)
+	string return_address, string api_public_key, bool verbose)
 {
-	return -1;
+	/// API Throttle
+	if (API_THROTTLE_ENABLED) api_throttle();
+
+    api_createTransaction_obj obj =
+		api_createTransaction(address_out, amount, coin_pair, return_address,
+			api_public_key);
+
+	/// Check for API errors
+	int i_retval = obj.error != "" ? TEST_API_ERR : TEST_OK;
+	string s_retval = obj.error != "" ? "TEST_API_ERR" : "TEST_OK";
+
+	/// Print API call output
+	if (verbose)
+	{
+		cerr << "##### TESTING api_createTransaction #####" << endl;
+		cerr << "Function arguments:" << endl;
+		cerr << "address_out = " << address_out << endl;
+		cerr << "amount = " << amount << endl;
+		cerr << "coin_pair = " << coin_pair << endl;
+		cerr << "return_address = " << return_address << endl;
+		cerr << "xrp_destination_tag = " << "(NOT IMPLEMENTED)" << endl;
+		cerr << "nxt_rs_address = " << "(NOT IMPLEMENTED)" << endl;
+		cerr << "api_public_key = " << api_public_key << endl;
+		cerr << "Function output:" << endl;
+		cerr << "retval = " << s_retval << endl;
+		cerr << "obj.order_id = " << obj.order_id << endl;
+		cerr << "obj.coin_pair = " << obj.coin_pair << endl;
+		cerr << "obj.address_in = " << obj.address_in << endl;
+		cerr << "obj.amount_in = " << obj.amount_in << endl;
+		cerr << "obj.address_out = " << obj.address_out << endl;
+		cerr << "obj.amount_out = " << obj.amount_out << endl;
+		cerr << "obj.return_address = " << obj.return_address << endl;
+		cerr << "obj.expiration = " << obj.expiration << endl;
+		cerr << "obj.rate_fixed = " << obj.rate_fixed << endl;
+		cerr << "obj.limit_max = " << obj.limit_max << endl;
+		cerr << "obj.miner_fee = " << obj.miner_fee << endl;
+		//cerr << "obj.nxt_public_key = " << obj.nxt_public_key << endl;
+		//cerr << "obj.xrp_destination_tag = " << obj.xrp_destination_tag
+		//	<< endl;
+		cerr << "obj.api_public_key = " << obj.api_public_key << endl;
+		cerr << "obj.error = " << obj.error << endl;
+		cerr << "Cancelling transaction:" << endl;
+		test_cancelTransaction(obj.address_in, true);
+		cerr << "##### END TESTING api_createTransaction #####" << endl;
+	}
+
+	return i_retval;
+}
+
+/// Not currently implemented in batch-testing
+int test_createTransaction(double amount, string coin_pair, bool verbose)
+{
+	/// API Throttle
+	if (API_THROTTLE_ENABLED) api_throttle();
+
+    api_createTransaction_obj obj = api_createTransaction(amount, coin_pair);
+
+	/// Check for API errors
+	int i_retval = obj.error != "" ? TEST_API_ERR : TEST_OK;
+	string s_retval = obj.error != "" ? "TEST_API_ERR" : "TEST_OK";
+
+	/// Print API call output
+	if (verbose)
+	{
+		cerr << "##### TESTING api_createTransaction (Q) #####" << endl;
+		cerr << "Function arguments:" << endl;
+		cerr << "amount = " << amount << endl;
+		cerr << "coin_pair = " << coin_pair << endl;
+		cerr << "Function output:" << endl;
+		cerr << "retval = " << s_retval << endl;
+		cerr << "obj.order_id = " << obj.order_id << endl;
+		cerr << "obj.coin_pair = " << obj.coin_pair << endl;
+		//cerr << "obj.address_in = " << obj.address_in << endl;
+		cerr << "obj.amount_in = " << obj.amount_in << endl;
+		//cerr << "obj.address_out = " << obj.address_out << endl;
+		cerr << "obj.amount_out = " << obj.amount_out << endl;
+		//cerr << "obj.return_address = " << obj.return_address << endl;
+		cerr << "obj.expiration = " << obj.expiration << endl;
+		cerr << "obj.rate_fixed = " << obj.rate_fixed << endl;
+		cerr << "obj.limit_max = " << obj.limit_max << endl;
+		cerr << "obj.miner_fee = " << obj.miner_fee << endl;
+		//cerr << "obj.nxt_public_key = " << obj.nxt_public_key << endl;
+		//cerr << "obj.xrp_destination_tag = " << obj.xrp_destination_tag
+		//	<< endl;
+		//cerr << "obj.api_public_key = " << obj.api_public_key << endl;
+		cerr << "obj.error = " << obj.error << endl;
+		cerr << "##### END TESTING api_createTransaction (Q) #####" << endl;
+	}
+
+	return i_retval;
 }
 
 /// Not currently implemented in batch-testing

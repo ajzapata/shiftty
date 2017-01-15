@@ -638,18 +638,123 @@ api_requestEmailReceipt(string email_address, string tx_id)
 	return obj;
 }
 
-/// Fixed Amount Transaction / Quote Send Exact Price (api_createTransaction):
+/// Fixed Amount Transaction (api_createTransaction):
 /// This call allows you to request a fixed amount to be sent to the withdrawal
 /// address. You provide a withdrawal address and the amount you want sent to
 /// it. We return the amount to deposit and the address to deposit to. This
-/// allows you to use shapeshift as a payment mechanism. This call also allows
-/// you to request a quoted price on the amount of a transaction without a
-/// withdrawal address.
+/// allows you to use shapeshift as a payment mechanism. ...
+/// TODO: TEST WITH VALID INPUT (NOT READY FOR LIVE USE)
 api_createTransaction_obj
 api_createTransaction(string address_out, double amount, string coin_pair,
-	bool getQuoteOnly, string return_address, string api_public_key)
+	string return_address, string api_public_key)
 {
-	return api_createTransaction_obj();
+	/// Since the members in the JSON POST data can change depending on the
+	/// arguments given, it's more convenient to use the exisiting JSON
+	/// framework (originally used to only read API responses) than manually
+	/// write a compatible JSON string for each case.
+	Json::Value json_post_data;
+	json_post_data["withdrawal"] = address_out;
+	json_post_data["amount"] = amount; /// VERIFY THAT IT'S A DOUBLE (NOT STR)
+	json_post_data["pair"] = coin_pair;
+	if (!return_address.empty())
+		json_post_data["returnAddress"] = return_address;
+	if (!api_public_key.empty())
+		json_post_data["apiKey"] = api_public_key;
+
+	/// Remove spaces, carriage-returns, and new-lines from styled JSON string
+	string json_post_data_str = json_post_data.toStyledString();
+	string post_data;
+	char c;
+	for (size_t i = 0; i < json_post_data_str.length(); i++)
+	{
+        c = json_post_data_str[i];
+        if (c != ' ' && c != '\n' && c != '\r')
+			post_data += c;
+	}
+
+	/// API call
+	string json_data_raw =
+		http_post(URL_API_CREATE_TRANSACTION, post_data);
+
+	/// Interpret and extract JSON data
+	Json::Reader json_reader;
+	Json::Value json_data;
+	json_reader.parse(json_data_raw, json_data);
+
+	api_createTransaction_obj obj;
+
+	/// Fill API object fields
+	if (json_data.isMember("success") && json_data["success"].isObject())
+	{
+		obj.order_id = json_data["success"]["orderId"].asString();
+		obj.coin_pair = json_data["success"]["pair"].asString();
+		obj.address_in = json_data["success"]["deposit"].asString();
+		obj.amount_in =
+			stod(json_data["success"]["depositAmount"].asString());
+		obj.address_out = json_data["success"]["withdrawal"].asString();
+		obj.amount_out =
+			stod(json_data["success"]["withdrawalAmount"].asString());
+		obj.return_address = json_data["success"]["returnAddress"].asString();
+		obj.expiration = json_data["success"]["expiration"].asUInt64();
+		obj.rate_fixed =
+			stod(json_data["success"]["quotedRate"].asString());
+		obj.limit_max = json_data["success"]["maxLimit"].asDouble();
+		obj.miner_fee =
+			stod(json_data["success"]["minerFee"].asString());
+		obj.api_public_key = json_data["success"]["apiPubKey"].asString();
+		obj.error = json_data["success"]["error"].asString();
+	}
+	else obj.error = json_data["error"].asString();
+
+	return obj;
+}
+
+/// Quote Send Exact Price (api_createTransaction, overloaded function):
+/// ...This call also allows you to request a quoted price on the amount of a
+/// transaction without a withdrawal address.
+api_createTransaction_obj
+api_createTransaction(double amount, string coin_pair)
+{
+	/// Manually write JSON POST data
+	string post_data =
+		"{\"amount\":" + to_string(amount) + ",\"pair\":\"" + coin_pair +
+			"\"}";
+
+	/// API call
+	string json_data_raw =
+		http_post(URL_API_CREATE_TRANSACTION, post_data);
+
+	/// Interpret and extract JSON data
+	Json::Reader json_reader;
+	Json::Value json_data;
+	json_reader.parse(json_data_raw, json_data);
+
+	api_createTransaction_obj obj;
+
+	/// Fill API object fields
+	if (json_data.isMember("success") && json_data["success"].isObject())
+	{
+		obj.order_id = json_data["success"]["orderId"].asString();
+		obj.coin_pair = json_data["success"]["pair"].asString();
+		//obj.address_in = json_data["success"]["deposit"].asString();
+		obj.amount_in =
+			stod(json_data["success"]["depositAmount"].asString());
+		//obj.address_out = json_data["success"]["withdrawal"].asString();
+		obj.amount_out =
+			stod(json_data["success"]["withdrawalAmount"].asString());
+		//obj.return_address = json_data["success"]["returnAddress"].asString();
+		obj.expiration = json_data["success"]["expiration"].asUInt64();
+		obj.rate_fixed =
+			stod(json_data["success"]["quotedRate"].asString());
+		obj.limit_max = json_data["success"]["maxLimit"].asDouble();
+		obj.miner_fee =
+			stod(json_data["success"]["minerFee"].asString());
+		//obj.api_public_key = json_data["success"]["apiPubKey"].asString();
+		obj.error = json_data["success"]["error"].asString();
+	}
+	else obj.error = json_data["error"].asString();
+
+	return obj;
 }
 
 /// Cancel Pending Transaction (api_cancelTransaction):
@@ -673,9 +778,7 @@ api_cancelTransaction_obj api_cancelTransaction(string address_in)
 
 	/// Fill API object fields
 	obj.success = json_data["success"].asString();
-	obj.error = json_data["error"].isString() ?
-		json_data["error"].asString() :
-		"[SELF] ERR: Also, unknown error message format";
+	obj.error = json_data["error"].asString();
 
 	return obj;
 }

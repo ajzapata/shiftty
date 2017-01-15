@@ -55,8 +55,10 @@ int test_createTransaction_quick(string address_out, string coin_pair,
 int test_requestEmailReceipt(string email_address, string tx_id,
 	bool verbose = false);
 int test_createTransaction(string address_out, double amount, string coin_pair,
-	bool getQuoteOnly = false, string return_address = "",
-	string api_public_key = "", bool verbose = false);
+	string return_address = "", string api_public_key = "",
+	bool verbose = false);
+int test_createTransaction(double amount, string coin_pair,
+	bool verbose = false);
 int test_cancelTransaction(string address_in, bool verbose = false);
 
 /// Test-case batches

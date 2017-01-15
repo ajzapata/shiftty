@@ -144,13 +144,16 @@ struct api_requestEmailReceipt_obj
 
 struct api_createTransaction_obj
 {
+	string order_id;
 	string coin_pair;
 	string address_in;
 	double amount_in;
 	string address_out;
 	double amount_out;
+	string return_address;
 	uint64_t expiration;
 	double rate_fixed;
+	double limit_max;
 	double miner_fee;
 	string api_public_key;
 	string error;
@@ -195,8 +198,10 @@ api_requestEmailReceipt(string email_address, string tx_id);
 
 api_createTransaction_obj
 api_createTransaction(string address_out, double amount, string coin_pair,
-	bool getQuoteOnly = false, string return_address = "",
-	string api_public_key = "");
+	string return_address = "", string api_public_key = "");
+
+api_createTransaction_obj
+api_createTransaction(double amount, string coin_pair);
 
 api_cancelTransaction_obj api_cancelTransaction(string address_in);
 
