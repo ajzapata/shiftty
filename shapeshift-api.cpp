@@ -603,17 +603,43 @@ api_createTransaction_quick(string address_out, string coin_pair,
 	return obj;
 }
 
-#if 0
-
 /// Request Email Receipt (api_requestEmailReceipt):
 /// This call requests a receipt for a transaction. The email address will be
 /// added to the conduit associated with that transaction as well. (Soon it
 /// will also send receipts to subsequent transactions on that conduit)
+/// TODO: TEST WITH VALID INPUT
 api_requestEmailReceipt_obj
 api_requestEmailReceipt(string email_address, string tx_id)
 {
+	/// Simple enough to write the JSON post data manually
+	string post_data =
+		"{\"email\":\"" + email_address + "\",\"txid\":\"" + tx_id + "\"}";
 
+	/// API call
+	string json_data_raw =
+		"{\"email\":{\"status\":\"success\",\"message\":\"Email receipt sent\"}}"; /// TEST
+		//http_post(URL_API_REQUEST_EMAIL_RECEIPT, post_data);
+
+	/// Interpret and extract JSON data
+	Json::Reader json_reader;
+	Json::Value json_data;
+	json_reader.parse(json_data_raw, json_data);
+
+	api_requestEmailReceipt_obj obj;
+
+	/// Fill API object fields
+	if (json_data.isMember("email") && json_data["email"].isObject())
+	{
+		obj.status = json_data["email"]["status"].asString();
+		obj.message = json_data["email"]["message"].asString();
+		obj.error = json_data["email"]["error"].asString();
+	}
+	else obj.error = json_data["error"].asString();
+
+	return obj;
 }
+
+#if 0
 
 /// Fixed Amount Transaction / Quote Send Exact Price (api_createTransaction):
 /// This call allows you to request a fixed amount to be sent to the withdrawal

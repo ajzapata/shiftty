@@ -495,6 +495,38 @@ int test_createTransaction_quick(string address_out, string coin_pair,
 	return i_retval;
 }
 
+/// Not currently implemented in batch-testing
+int test_requestEmailReceipt(string email_address, string tx_id, bool verbose)
+{
+	/// API Throttle
+	if (API_THROTTLE_ENABLED) api_throttle();
+
+    api_requestEmailReceipt_obj obj =
+		api_requestEmailReceipt(email_address, tx_id);
+
+	/// Check for API errors
+	/// TODO: Check/test if obj.status can equal "error", "failed", etc.
+	int i_retval = obj.error != "" ? TEST_API_ERR : TEST_OK;
+	string s_retval = obj.error != "" ? "TEST_API_ERR" : "TEST_OK";
+
+	/// Print API call output
+	if (verbose)
+	{
+		cerr << "##### TESTING api_requestEmailReceipt #####" << endl;
+		cerr << "Function arguments:" << endl;
+		cerr << "email_address = " << email_address << endl;
+		cerr << "tx_id = " << tx_id << endl;
+		cerr << "Function output:" << endl;
+		cerr << "retval = " << s_retval << endl;
+		cerr << "obj.status = " << obj.status << endl;
+		cerr << "obj.message = " << obj.message << endl;
+		cerr << "obj.error = " << obj.error << endl;
+		cerr << "##### END TESTING requestEmailReceipt #####" << endl;
+	}
+
+	return i_retval;
+}
+
 /// Test-case batches
 
 int test_all(bool verbose)

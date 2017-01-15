@@ -190,11 +190,9 @@ api_createTransaction_quick_obj
 api_createTransaction_quick(string address_out, string coin_pair,
 	string return_address = "", string api_public_key = "");
 
-#if 0
-
 api_requestEmailReceipt_obj
 api_requestEmailReceipt(string email_address, string tx_id);
-
+#if 0
 api_createTransaction_obj
 api_createTransaction(string address_out, double amount, string coin_pair,
 	bool getQuoteOnly = false, string return_address = "",
