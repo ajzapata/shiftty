@@ -527,6 +527,42 @@ int test_requestEmailReceipt(string email_address, string tx_id, bool verbose)
 	return i_retval;
 }
 
+/// Not currently implemented in batch-testing
+int test_createTransaction(string address_out, double amount, string coin_pair,
+	bool getQuoteOnly, string return_address, string api_public_key,
+	bool verbose)
+{
+	return -1;
+}
+
+/// Not currently implemented in batch-testing
+int test_cancelTransaction(string address_in, bool verbose)
+{
+	/// API Throttle
+	if (API_THROTTLE_ENABLED) api_throttle();
+
+    api_cancelTransaction_obj obj = api_cancelTransaction(address_in);
+
+	/// Check for API errors
+	int i_retval = obj.error != "" ? TEST_API_ERR : TEST_OK;
+	string s_retval = obj.error != "" ? "TEST_API_ERR" : "TEST_OK";
+
+	/// Print API call output
+	if (verbose)
+	{
+		cerr << "##### TESTING api_cancelTransaction #####" << endl;
+		cerr << "Function arguments:" << endl;
+		cerr << "address_in = " << address_in << endl;
+		cerr << "Function output:" << endl;
+		cerr << "retval = " << s_retval << endl;
+		cerr << "obj.success = " << obj.success << endl;
+		cerr << "obj.error = " << obj.error << endl;
+		cerr << "##### END TESTING api_cancelTransaction #####" << endl;
+	}
+
+	return i_retval;
+}
+
 /// Test-case batches
 
 int test_all(bool verbose)

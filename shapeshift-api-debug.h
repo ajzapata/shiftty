@@ -54,13 +54,10 @@ int test_createTransaction_quick(string address_out, string coin_pair,
 	bool verbose = false);
 int test_requestEmailReceipt(string email_address, string tx_id,
 	bool verbose = false);
-#if 0
 int test_createTransaction(string address_out, double amount, string coin_pair,
 	bool getQuoteOnly = false, string return_address = "",
 	string api_public_key = "", bool verbose = false);
-int test_cancelTransaction_obj api_cancelTransaction(string address_in,
-	bool verbose = false);
-#endif // 0
+int test_cancelTransaction(string address_in, bool verbose = false);
 
 /// Test-case batches
 /// These are relatively automatic and use preset values defined above

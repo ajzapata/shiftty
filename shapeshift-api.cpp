@@ -638,8 +638,6 @@ api_requestEmailReceipt(string email_address, string tx_id)
 	return obj;
 }
 
-#if 0
-
 /// Fixed Amount Transaction / Quote Send Exact Price (api_createTransaction):
 /// This call allows you to request a fixed amount to be sent to the withdrawal
 /// address. You provide a withdrawal address and the amount you want sent to
@@ -651,7 +649,7 @@ api_createTransaction_obj
 api_createTransaction(string address_out, double amount, string coin_pair,
 	bool getQuoteOnly, string return_address, string api_public_key)
 {
-
+	return api_createTransaction_obj();
 }
 
 /// Cancel Pending Transaction (api_cancelTransaction):
@@ -660,7 +658,24 @@ api_createTransaction(string address_out, double amount, string coin_pair,
 /// pending transaction cannot be canceled.
 api_cancelTransaction_obj api_cancelTransaction(string address_in)
 {
+	/// Simple enough to write the JSON post data manually
+	string post_data = "{\"address\":\"" + address_in + "\"}";
 
+	/// API call
+	string json_data_raw = http_post(URL_API_CANCEL_TRANSACTION, post_data);
+
+	/// Interpret and extract JSON data
+	Json::Reader json_reader;
+	Json::Value json_data;
+	json_reader.parse(json_data_raw, json_data);
+
+	api_cancelTransaction_obj obj;
+
+	/// Fill API object fields
+	obj.success = json_data["success"].asString();
+	obj.error = json_data["error"].isString() ?
+		json_data["error"].asString() :
+		"[SELF] ERR: Also, unknown error message format";
+
+	return obj;
 }
-
-#endif // 0
