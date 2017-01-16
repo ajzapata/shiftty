@@ -13,7 +13,6 @@ using its API.
 #include <cassert>
 #include <vector>
 #include <curl/curl.h> /// pkg "libcurl-devel" (Fedora Linux 24)
-#include "logger.h"
 #include "shapeshift-api.h"
 #include "shapeshift-api-debug.h"
 #include "json/json.h"

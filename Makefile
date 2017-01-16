@@ -1,10 +1,10 @@
 CC = g++
 CFLAGS = -g -O0 -std=c++14 -Wall -Wextra -Wno-unused-parameter -lcurl
 PRGM = shiftty
-HFILES = http.h shapeshift-api.h logger.h shapeshift-api-debug.h json/json.h \
+HFILES = http.h shapeshift-api.h shapeshift-api-debug.h json/json.h \
 json/json-forwards.h
-CFILES = main.cpp http.cpp shapeshift-api.cpp logger.cpp \
-shapeshift-api-debug.cpp jsoncpp.cpp
+CFILES = main.cpp http.cpp shapeshift-api.cpp shapeshift-api-debug.cpp \
+jsoncpp.cpp
 OFILES = $(CFILES:.cpp=.o)
 
 DISTFILES = Makefile LICENSE README $(HFILES) $(CFILES)

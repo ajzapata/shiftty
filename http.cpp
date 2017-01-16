@@ -9,7 +9,6 @@
 #include <fstream>
 #include <cassert>
 #include <curl/curl.h> /// pkg "libcurl-devel" (Fedora Linux 24)
-#include "logger.h"
 
 #if !defined _WIN32 && !defined _WIN64
 #include <unistd.h>
@@ -114,13 +113,13 @@ std::string http_get(std::string url)
 
 	/// Only log HTTP code if not zero
 	//if (http_code != 0)
-	//	slog("HTTP GET " + url + "; RETURN CODE " + to_string((int)http_code));
+	//	cerr << "HTTP GET " << url << "; RETURN CODE " << http_code << endl;
 	/// (^ non-functional; http_code never becomes defined)
 
 	/// Check for errors with the request
 	if (curl_retcode != CURLE_OK) {
-		slog("http.cpp::http_get HTTP Request failed. " +
-			string(curl_easy_strerror(curl_retcode)), MessageType::error);
+		cerr << "http.cpp::http_get HTTP Request failed. " <<
+			curl_easy_strerror(curl_retcode) << endl;
 		return "";
 	}
 
@@ -210,12 +209,12 @@ std::string http_post(std::string url, std::string post_data)
 
 	/// Only log HTTP code if not zero
 	//if (http_code != 0)
-	//	slog("HTTP GET " + url + "; RETURN CODE " + to_string((int)http_code));
+	//	cerr << "HTTP POST " << url << "; RETURN CODE " << http_code << endl;
 
 	/// Check for errors with the request
 	if (curl_retcode != CURLE_OK) {
-		slog("http.cpp::http_get HTTP Request failed. " +
-			string(curl_easy_strerror(curl_retcode)), MessageType::error);
+		cerr << "http.cpp::http_post HTTP Request failed. " <<
+			curl_easy_strerror(curl_retcode) << endl;
 		return "";
 	}
 
