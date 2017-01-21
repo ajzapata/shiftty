@@ -5,8 +5,6 @@
 #include <string>
 #include <vector>
 #include <cinttypes>
-#include <thread>
-#include <chrono>
 
 using std::string;
 using std::vector;
@@ -35,7 +33,7 @@ URL_API_REQUEST_EMAIL_RECEIPT = "https://shapeshift.io/mail",
 URL_API_CREATE_TRANSACTION = "https://shapeshift.io/sendamount",
 URL_API_CANCEL_TRANSACTION = "https://shapeshift.io/cancelpending";
 
-/* Shapeshift API Objects - Encapsulates API response */
+/// Rate (api_rate)
 
 struct api_rate_obj
 {
@@ -44,6 +42,11 @@ struct api_rate_obj
 	string error;
 };
 
+api_rate_obj
+api_rate(string coin_pair);
+
+/// Deposit Limit (api_depositLimit)
+
 struct api_depositLimit_obj
 {
 	string coin_pair;				/// "pair"
@@ -51,6 +54,11 @@ struct api_depositLimit_obj
 	double limit_min;				/// "min"
 	string error;
 };
+
+api_depositLimit_obj
+api_depositLimit(string coin_pair);
+
+/// Market Info (api_marketInfo)
 
 struct api_marketInfo_obj
 {
@@ -63,6 +71,11 @@ struct api_marketInfo_obj
 	string error;
 };
 
+vector<api_marketInfo_obj>
+api_marketInfo(string coin_pair);
+
+/// Recent Transaction List (api_recentTransactions)
+
 struct api_recentTransactions_obj
 {
 	string coin_in;
@@ -71,6 +84,11 @@ struct api_recentTransactions_obj
 	double timestamp_sec;
 	string error;
 };
+
+vector<api_recentTransactions_obj>
+api_recentTransactions(uint8_t amount = 5);
+
+/// Status of deposit to address (api_transactionStatus)
 
 struct api_transactionStatus_obj
 {
@@ -85,12 +103,22 @@ struct api_transactionStatus_obj
 	string error;
 };
 
+api_transactionStatus_obj
+api_transactionStatus(string address_in);
+
+/// Time Remaining on Fixed Amount Transaction (api_timeRemaining)
+
 struct api_timeRemaining_obj
 {
 	string status;
 	int seconds_remaining;
 	string error;
 };
+
+api_timeRemaining_obj
+api_timeRemaining(string deposit_address);
+
+/// Get List of Supported Coins with Icon Links (api_listCoins)
 
 struct api_listCoins_obj
 {
@@ -100,6 +128,14 @@ struct api_listCoins_obj
 	string status;
 	string error;
 };
+
+vector<api_listCoins_obj>
+api_listCoins();
+
+/// Get List of Transactions with a PRIVATE API KEY
+/// (api_listTransactions_private)
+/// Get List of Transactions with a Specific Output Address
+/// (api_listTransactions_private, overloaded function)
 
 struct api_listTransactions_private_obj
 {
@@ -116,11 +152,25 @@ struct api_listTransactions_private_obj
 	string error;
 };
 
+vector<api_listTransactions_private_obj>
+api_listTransactions_private(string api_key);
+
+vector<api_listTransactions_private_obj>
+api_listTransactions_private(string api_key, string address_out);
+
+/// Validate an address, given a currency symbol and address.
+/// (api_validateAddress)
+
 struct api_validateAddress_obj
 {
 	bool isValid;
 	string error;
 };
+
+api_validateAddress_obj
+api_validateAddress(string address, string coin);
+
+/// Normal Transaction (api_createTransaction_quick)
 
 struct api_createTransaction_quick_obj
 {
@@ -135,12 +185,24 @@ struct api_createTransaction_quick_obj
 	string error;
 };
 
+api_createTransaction_quick_obj
+api_createTransaction_quick(string address_out, string coin_pair,
+	string return_address = "", string api_public_key = "");
+
+/// Request Email Receipt (api_requestEmailReceipt)
+
 struct api_requestEmailReceipt_obj
 {
 	string status;
 	string message;
 	string error;
 };
+
+api_requestEmailReceipt_obj
+api_requestEmailReceipt(string email_address, string tx_id);
+
+/// Fixed Amount Transaction (api_createTransaction)
+/// Quote Send Exact Price (api_createTransaction, overloaded function)
 
 struct api_createTransaction_obj
 {
@@ -159,43 +221,6 @@ struct api_createTransaction_obj
 	string error;
 };
 
-struct api_cancelTransaction_obj
-{
-	string success;
-	string error;
-};
-
-/* Shapeshift API Function Declarations */
-
-api_rate_obj api_rate(string coin_pair);
-
-api_depositLimit_obj api_depositLimit(string coin_pair);
-
-vector<api_marketInfo_obj> api_marketInfo(string coin_pair);
-
-vector<api_recentTransactions_obj> api_recentTransactions(uint8_t amount = 5);
-
-api_transactionStatus_obj api_transactionStatus(string address_in);
-
-api_timeRemaining_obj api_timeRemaining(string deposit_address);
-
-vector<api_listCoins_obj> api_listCoins();
-
-vector<api_listTransactions_private_obj>
-api_listTransactions_private(string api_key);
-
-vector<api_listTransactions_private_obj>
-api_listTransactions_private(string api_key, string address_out);
-
-api_validateAddress_obj api_validateAddress(string address, string coin);
-
-api_createTransaction_quick_obj
-api_createTransaction_quick(string address_out, string coin_pair,
-	string return_address = "", string api_public_key = "");
-
-api_requestEmailReceipt_obj
-api_requestEmailReceipt(string email_address, string tx_id);
-
 api_createTransaction_obj
 api_createTransaction(string address_out, double amount, string coin_pair,
 	string return_address = "", string api_public_key = "");
@@ -203,6 +228,15 @@ api_createTransaction(string address_out, double amount, string coin_pair,
 api_createTransaction_obj
 api_createTransaction(double amount, string coin_pair);
 
-api_cancelTransaction_obj api_cancelTransaction(string address_in);
+/// Cancel Pending Transaction (api_cancelTransaction)
+
+struct api_cancelTransaction_obj
+{
+	string success;
+	string error;
+};
+
+api_cancelTransaction_obj
+api_cancelTransaction(string address_in);
 
 #endif // SHAPESHIFT_API_INCLUDED

@@ -4,6 +4,8 @@
 #include "shapeshift-api.h"
 #include <string>
 #include <cinttypes>
+#include <thread>
+#include <chrono>
 
 using std::string;
 
