@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "shapeshift-api.h"
 
 using namespace std;
 

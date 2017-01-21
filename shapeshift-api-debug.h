@@ -1,7 +1,6 @@
 #ifndef SHAPESHIFT_API_DEBUG_INCLUDED
 #define SHAPESHIFT_API_DEBUG_INCLUDED
 
-#include "shapeshift-api.h"
 #include <string>
 #include <cinttypes>
 #include <thread>
