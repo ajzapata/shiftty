@@ -208,7 +208,7 @@ struct api_createTransaction_obj
 {
 	string order_id;
 	string coin_pair;
-	string address_in;
+	string address_in;			/// XMR: CONTAINS THE (REQUIRED) PAYMENT-ID
 	double amount_in;
 	string address_out;
 	double amount_out;
@@ -218,6 +218,7 @@ struct api_createTransaction_obj
 	double limit_max;
 	double miner_fee;
 	string api_public_key;
+	string secondary_address;	/// XMR: CONTAINS THE DEPOSIT ADDRESS
 	string error;
 };
 

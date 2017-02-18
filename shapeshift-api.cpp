@@ -17,6 +17,8 @@
 
 using namespace std;
 
+const bool SUPPRESS_LOG_MESSAGES = false;
+
 /// API call descriptions are from Shapeshift's API documentation at
 ///    https://info.shapeshift.io/api
 /// Descriptions retrieved at Friday November 25, 2016 22:37
@@ -93,7 +95,7 @@ vector<api_marketInfo_obj> api_marketInfo(string coin_pair)
 	/// Calling this function without an argument (the empty string) will
 	/// return multiple coin-pairs and may take a significant time to process;
 	/// thus, a warning is provided.
-	if (coin_pair == "") cerr <<
+	if (coin_pair == "" && !SUPPRESS_LOG_MESSAGES) cerr <<
 		"api_marketInfo called with empty string; this may take a while..."
 		<< endl;
 
@@ -183,13 +185,13 @@ vector<api_recentTransactions_obj> api_recentTransactions(uint8_t amount)
 	/// This API call never returns an error message either(?); negative or
 	/// non-numeric input is replaced by the default amount of 5 (not possible
 	/// to input in this function and thus not handled).
-	if (amount < 1) {
+	if (amount < 1 && !SUPPRESS_LOG_MESSAGES) {
 		cerr <<
 			"api_recentTransactions: amount < 1. Defaulting to amount = 5"
 			<< endl;
 		amount = 5;
 	}
-	else if (amount > 50) {
+	else if (amount > 50 && !SUPPRESS_LOG_MESSAGES) {
 		cerr <<
 			"api_recentTransactions: amount > 50. Defaulting to amount = 50"
 			<< endl;
@@ -704,6 +706,7 @@ api_createTransaction(string address_out, double amount, string coin_pair,
 		obj.miner_fee =
 			stod(json_data["success"]["minerFee"].asString());
 		obj.api_public_key = json_data["success"]["apiPubKey"].asString();
+		obj.secondary_address = json_data["success"]["sAddress"].asString();
 		obj.error = json_data["success"]["error"].asString();
 	}
 	else obj.error = json_data["error"].asString();
